@@ -4,11 +4,11 @@ package com.example.administrator.jianshang.bean;
  * Created by Administrator on 2019/6/2.
  */
 
-public class YearsInfo {
+public class YearsInfoBean {
     int id;
     String year;
 
-    public YearsInfo() {
+    public YearsInfoBean() {
 
     }
 

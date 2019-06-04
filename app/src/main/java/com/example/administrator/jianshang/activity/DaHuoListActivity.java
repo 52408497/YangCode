@@ -18,11 +18,11 @@ import com.example.administrator.jianshang.sqlite.dao.TbDauoInfoDao;
 
 public class DaHuoListActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerviewDahuoList;
-    private ImageAndTestRecyclerViewAdapter adapter;
-    private TbDauoInfoDao dauoInfoDao;
-    private Cursor cursor = null;
-    private ImageButton btnNewClothes;
+//    private RecyclerView recyclerviewDahuoList;
+//    private ImageAndTestRecyclerViewAdapter adapter;
+//    private TbDauoInfoDao dauoInfoDao;
+//    private Cursor cursor = null;
+//    private ImageButton btnNewClothes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +32,8 @@ public class DaHuoListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String data = intent.getStringExtra("yearInfo");
 
-        recyclerviewDahuoList = findViewById(R.id.recyclerview_dahuo_list);
-        btnNewClothes = findViewById(R.id.btnNewClothes);
+//        recyclerviewDahuoList = findViewById(R.id.recyclerview_dahuo_list);
+//        btnNewClothes = findViewById(R.id.btnNewClothes);
 
         //根据年份信息 查询数据库 获取款式列表
 

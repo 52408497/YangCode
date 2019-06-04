@@ -71,7 +71,7 @@ public class MyOpenHelper extends SQLiteOpenHelper {
                 "kuanhao text," +
                 "kuanshimingcheng text," +
                 "yangbanhao text," +
-                "id_year integer," +
+                "year_info text," +
                 "fengmian_img text," +
                 "tag text," +
                 "beizhu text)");
