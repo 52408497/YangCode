@@ -20,6 +20,22 @@ public class TbYearsInfoDao {
         myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 1);
     }
 
+    /**
+     * 删除年份
+     * @param yearInfo
+     * @return
+     */
+    public int delYearInfo(String yearInfo){
+    db = myOpenHelper.getWritableDatabase();
+    int n = db.delete("tb_year_info",
+            "year_info=?",
+            new String[]{yearInfo}
+            );
+    db.close();
+    myOpenHelper.close();
+    return n;
+}
+
 
     /**
      * 添加新的年份

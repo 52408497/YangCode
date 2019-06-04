@@ -2,6 +2,7 @@ package com.example.administrator.jianshang.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,9 +18,14 @@ import java.util.ArrayList;
 
 public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerViewAdapter.MyViewHodler> {
     private OnItemClickListener onItemClickListener;
-
+    //private OnLongClickListener onLongClickListener;
     private final Context context;
     private ArrayList<String> datas;
+    private int mPosition = -1;
+
+    public int getmPosition() {
+        return mPosition;
+    }
 
     public TimeRecyclerViewAdapter(Context context, ArrayList<String> datas) {
         this.context = context;
@@ -47,13 +53,15 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
      * @param position
      */
     @Override
-    public void onBindViewHolder(MyViewHodler holder, int position) {
+    public void onBindViewHolder(final MyViewHodler holder, int position) {
         //根据位置得到对应的数据
         String data = datas.get(position);
 
         //赋值数据
         holder.tv_time.setText(data);
+
     }
+
 
     /**
      * 得到总条数
@@ -68,11 +76,12 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
 
     /**
      * 添加数据
+     *
      * @param position
      * @param data
      */
     public void addData(int position, String data) {
-        datas.add(position,data);
+        datas.add(position, data);
 
         //刷新适配器 插入操作
         notifyItemInserted(position);
@@ -80,6 +89,7 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
 
     /**
      * 移除数据
+     *
      * @param position
      */
     public void removeData(int position) {
@@ -88,6 +98,7 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
         //刷新适配器 移除操作
         notifyItemRemoved(position);
     }
+
 
     class MyViewHodler extends RecyclerView.ViewHolder {
 
@@ -100,17 +111,29 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (onItemClickListener != null){
-                        onItemClickListener.onItemClick(view,datas.get(getLayoutPosition()));
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(view, datas.get(getLayoutPosition()));
                     }
                 }
             });
 
 
+            itemView.setLongClickable(true);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View view) {
+                    mPosition = getAdapterPosition();
+                    return false;
+                }
+            });
+
+
         }
+
+
     }
-
-
 
 
 //-------------------------点击RecyclerView某条----------------------------------------------
@@ -124,11 +147,13 @@ public class TimeRecyclerViewAdapter extends RecyclerView.Adapter<TimeRecyclerVi
 
     /**
      * 外部需要实现监听事件时调用该方法实例化监听
+     *
      * @param onItemClickListener
      */
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
 
 
 

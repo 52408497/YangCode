@@ -9,7 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -63,8 +65,11 @@ public class DahuoFragment extends BaseFragment {
     protected void initData() {
         super.initData();
 
-        Log.e(TAG, "大货Fragment页面数据被初始化了！");
+        //Log.e(TAG, "大货Fragment页面数据被初始化了！");
 
+        registerForContextMenu(recyclerviewTime);//为recyclerview注册上下文菜单
+
+        //创建弹出窗口
         createDialog();
 
         //查询数据库,添加数据
@@ -72,10 +77,10 @@ public class DahuoFragment extends BaseFragment {
 
         yearsInfoDao = new TbYearsInfoDao(mContext);
         cursor = yearsInfoDao.getAllYearsInfo();
-        if (cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 datas.add(cursor.getString(cursor.getColumnIndex("year_info")));
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
 
@@ -83,6 +88,49 @@ public class DahuoFragment extends BaseFragment {
         useRecyclerViewToShow();
 
         //添加按钮的点击事件监听
+        setOnClickListener();
+
+        //添加每项点击事件监听
+        setOnItemClickListener();
+
+
+    }
+
+
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add(0, 0, 0, "删除");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        if (getUserVisibleHint()){
+
+            String sYearInfo = datas.get(adapter.getmPosition());
+            //Toast.makeText(mContext, "删除："+sYearInfo, Toast.LENGTH_SHORT).show();
+
+            //从数据库中删除
+            n = yearsInfoDao.delYearInfo(sYearInfo);
+            if(n>0){
+                adapter.removeData(adapter.getmPosition());
+                //重新添加每项点击事件监听
+                setOnItemClickListener();
+                Toast.makeText(mContext, "数据删除成功！", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(mContext, "数据删除过程中出现错误，请重试！", Toast.LENGTH_SHORT).show();
+            }
+            n = -1;
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+
+    private void setOnClickListener() {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,20 +139,19 @@ public class DahuoFragment extends BaseFragment {
                 useRecyclerViewToShow();
             }
         });
+    }
 
-        //添加每项点击事件监听
+    private void setOnItemClickListener() {
         adapter.setOnItemClickListener(new TimeRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, String data) {
                 Toast.makeText(mContext, "item==" + data, Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
-    private void createDialog(){
-        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_view,null);
+    private void createDialog() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_view, null);
         final EditText etYearInfo = view.findViewById(R.id.et_YearInfo);
 
         dlg = new AlertDialog.Builder(mContext)
@@ -116,22 +163,25 @@ public class DahuoFragment extends BaseFragment {
                         //根据年份信息查询数据库是否存在
                         cursor = yearsInfoDao.getYearsInfoForYearInfo(yearInfo);
                         //若存在则提示该数据已存在，不能重复添加
-                        if(cursor.moveToFirst()){
-                            Toast.makeText(mContext,"该数据已存在，不能重复添加",Toast.LENGTH_SHORT).show();
-                        }else {
+                        if (cursor.moveToFirst()) {
+                            Toast.makeText(mContext, "该数据已存在，不能重复添加", Toast.LENGTH_SHORT).show();
+                        } else {
                             //若不存在则添加数据
                             n = yearsInfoDao.addYearInfo(yearInfo);
-                            if(n>0){
-                                datas.add(yearInfo);
-                                Toast.makeText(mContext,"数据添加成功！",Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(mContext,"数据添加过程中出现错误，请重试！",Toast.LENGTH_SHORT).show();
+                            if (n > 0) {
+                                //添加数据
+                                adapter.addData(0, yearInfo);
+                                //重新添加每项点击事件监听
+                                setOnItemClickListener();
+                                Toast.makeText(mContext, "数据添加成功！", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, "数据添加过程中出现错误，请重试！", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                     }
                 })
-                .setNegativeButton("取消",new DialogInterface.OnClickListener(){
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -139,7 +189,6 @@ public class DahuoFragment extends BaseFragment {
                     }
                 })
                 .create();
-
 
 
     }
