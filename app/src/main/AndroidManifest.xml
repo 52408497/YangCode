@@ -25,7 +25,8 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
-        <!--         <activity android:name=".activity.TimeForDaHuoActivity"></activity> -->
+        <!-- <activity android:name=".activity.TimeForDaHuoActivity"></activity> -->
+        <activity android:name=".activity.DaHuoListActivity"></activity>
     </application>
 
 </manifest>

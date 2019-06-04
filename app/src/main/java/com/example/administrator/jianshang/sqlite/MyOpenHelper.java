@@ -72,6 +72,7 @@ public class MyOpenHelper extends SQLiteOpenHelper {
                 "kuanshimingcheng text," +
                 "yangbanhao text," +
                 "id_year integer," +
+                "fengmian_img text," +
                 "tag text," +
                 "beizhu text)");
 
@@ -87,6 +88,7 @@ public class MyOpenHelper extends SQLiteOpenHelper {
                 "_id_yangyi integer primary key autoincrement," +
                 "kuanshimingcheng text," +
                 "yangbanhao text," +
+                "fengmian_img text," +
                 "creat_time text," +
                 "beizhu text)");
 

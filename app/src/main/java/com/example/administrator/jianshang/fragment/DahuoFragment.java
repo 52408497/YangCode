@@ -4,6 +4,7 @@ package com.example.administrator.jianshang.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.administrator.jianshang.R;
+import com.example.administrator.jianshang.activity.DaHuoListActivity;
 import com.example.administrator.jianshang.adapters.RecycleViewDivider;
 import com.example.administrator.jianshang.adapters.TimeRecyclerViewAdapter;
 import com.example.administrator.jianshang.base.BaseFragment;
@@ -110,7 +112,6 @@ public class DahuoFragment extends BaseFragment {
         if (getUserVisibleHint()){
 
             String sYearInfo = datas.get(adapter.getmPosition());
-            //Toast.makeText(mContext, "删除："+sYearInfo, Toast.LENGTH_SHORT).show();
 
             //从数据库中删除
             n = yearsInfoDao.delYearInfo(sYearInfo);
@@ -135,8 +136,6 @@ public class DahuoFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 dlg.show();
-                //使用RecyclerView显示数据
-                useRecyclerViewToShow();
             }
         });
     }
@@ -145,7 +144,18 @@ public class DahuoFragment extends BaseFragment {
         adapter.setOnItemClickListener(new TimeRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, String data) {
-                Toast.makeText(mContext, "item==" + data, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "item==" + data, Toast.LENGTH_SHORT).show();
+
+
+
+                Intent intent = new Intent();
+                intent.setClass(mContext, DaHuoListActivity.class);
+                intent.putExtra("yearInfo", data);
+                startActivity(intent);
+
+
+
+
             }
         });
     }

@@ -17,7 +17,7 @@ public class TbYearsInfoDao {
     private SQLiteDatabase db = null;
 
     public TbYearsInfoDao(Context context) {
-        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 1);
+        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 2);
     }
 
     /**
