@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.administrator.jianshang.R;
+import com.example.administrator.jianshang.adapters.DaHuoListRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.ImageAndTestRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.RecycleViewDivider;
 import com.example.administrator.jianshang.adapters.TimeRecyclerViewAdapter;
@@ -18,22 +19,24 @@ import com.example.administrator.jianshang.sqlite.dao.TbDauoInfoDao;
 
 public class DaHuoListActivity extends AppCompatActivity {
 
-//    private RecyclerView recyclerviewDahuoList;
-//    private ImageAndTestRecyclerViewAdapter adapter;
-//    private TbDauoInfoDao dauoInfoDao;
-//    private Cursor cursor = null;
-//    private ImageButton btnNewClothes;
+    private RecyclerView recyclerviewDahuoList;
+    private DaHuoListRecyclerViewAdapter adapter;
+    private TbDauoInfoDao dauoInfoDao;
+    private Cursor cursor = null;
+    private ImageButton btnNewClothes;
 
+
+    private String timeData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_da_huo_list);
 
         Intent intent = getIntent();
-        String data = intent.getStringExtra("yearInfo");
+        timeData = intent.getStringExtra("yearInfo");
 
-//        recyclerviewDahuoList = findViewById(R.id.recyclerview_dahuo_list);
-//        btnNewClothes = findViewById(R.id.btnNewClothes);
+        recyclerviewDahuoList = findViewById(R.id.recyclerview_dahuo_list);
+        btnNewClothes = findViewById(R.id.btnNewClothes);
 
         //根据年份信息 查询数据库 获取款式列表
 
@@ -41,7 +44,10 @@ public class DaHuoListActivity extends AppCompatActivity {
 
     public void creatNewClothes(View view) {
 
-
+        Intent intent = new Intent();
+        intent.setClass(DaHuoListActivity.this, NewDaHuoClothesActivity.class);
+        intent.putExtra("yearInfo", timeData);
+        startActivity(intent);
 
     }
 
