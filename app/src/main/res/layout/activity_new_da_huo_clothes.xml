@@ -16,97 +16,59 @@
         android:orientation="vertical"
         android:padding="5dp">
 
-
         <RelativeLayout
-android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/colorAccent">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="添加款式图片" />
-
-        </RelativeLayout>
-
-
-        <LinearLayout
-            android:layout_marginTop="5dp"
-            android:background="@color/colorAccent"
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview_img_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_marginTop="5dp"
-            android:padding="10dp"
-            android:background="@color/colorAccent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="left">
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:gravity="left"
+            android:padding="10dp">
 
             <TextView
-                android:textSize="20dp"
+                android:id="@+id/tv_title_jbxx"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp"
+                android:text="基本信息"
+                android:textSize="20dp" />
+
+            <TextView
                 android:id="@+id/tv_kh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="款号：" />
+                android:layout_below="@+id/tv_title_jbxx"
+                android:text="款号："
+                android:textSize="20dp" />
 
             <TextView
-                android:textSize="20dp"
                 android:id="@+id/tv_mc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/et_mc"
                 android:layout_below="@+id/tv_kh"
-                android:text="款式名称：" />
+                android:text="款式名称："
+                android:textSize="20dp" />
 
 
             <TextView
-                android:textSize="20dp"
                 android:id="@+id/tv_ybh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/et_ybh"
                 android:layout_below="@+id/tv_mc"
-                android:text="样板号：" />
+                android:text="样板号："
+                android:textSize="20dp" />
+
 
             <TextView
-                android:textSize="20dp"
-                android:id="@+id/tv_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_select_fm"
-                android:layout_below="@+id/tv_ybh"
-                android:text="封面图片：" />
-
-            <TextView
-                android:textSize="20dp"
-                android:id="@+id/tv_fm_mc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/btn_select_fm"
-                android:layout_toRightOf="@id/tv_img"
-                android:text="" />
-
-            <TextView
-                android:textSize="20dp"
                 android:id="@+id/tv_bz"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/et_bz"
-                android:layout_below="@+id/tv_img"
-                android:text="备注：" />
+                android:layout_below="@+id/tv_ybh"
+                android:text="备注："
+                android:textSize="20dp" />
 
 
             <EditText
@@ -138,34 +100,189 @@ android:layout_marginTop="5dp"
                 android:id="@+id/et_bz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/btn_select_fm"
+                android:layout_below="@id/et_ybh"
                 android:layout_toRightOf="@+id/tv_mc"
                 android:hint="请输入备注信息" />
 
 
-            <Button
-                android:id="@+id/btn_select_fm"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:padding="10dp">
+
+            <RelativeLayout
+                android:id="@+id/rl_title_kstp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/colorAccent">
+
+                <TextView
+                    android:id="@+id/tv_kstp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/btnPaiZhao"
+                    android:text="款式图片"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/btnPaiZhao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/btnXiangCe"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_toLeftOf="@+id/btnXiangCe"
+                    android:layout_toStartOf="@+id/btnXiangCe"
+                    android:background="@drawable/paizhao"
+                    android:onClick="paiZhaoOnClickForKSTP" />
+
+                <ImageButton
+                    android:id="@+id/btnXiangCe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/xiangce"
+                    android:onClick="xiangCeOnClickForKSTP" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_test"
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/et_ybh"
-                android:layout_below="@id/et_ybh"
-                android:text="请选择封面图片" />
+                android:layout_below="@+id/rl_title_kstp" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_img_ks_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rl_title_kstp">
+
+            </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
 
-        <!--private String kuanhao;             //款号-->
-        <!--private String kuanshimingcheng;    //款式名称-->
-        <!--private String yangbanhao;          //样板号-->
-        <!--private String yearInfo;            //年份信息-->
-        <!--private String fengmianImg;         //封面图片-->
-        <!--private String tag;                 //标记（是否为爆款等）-->
-        <!--private String beizhu;              //备注-->
-<Button
-    android:text="确定"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:padding="10dp">
+            <RelativeLayout
+                android:id="@+id/rl_title_cbtp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/colorAccent">
+
+                <TextView
+                    android:id="@+id/tv_cb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/btnCBPaiZhao"
+                    android:text="款式成本"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/btnCBPaiZhao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/btnCBXiangCe"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_toLeftOf="@+id/btnCBXiangCe"
+                    android:layout_toStartOf="@+id/btnCBXiangCe"
+                    android:background="@drawable/paizhao"
+                    android:onClick="paiZhaoOnClickForKSTP" />
+
+                <ImageButton
+                    android:id="@+id/btnCBXiangCe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/xiangce"
+                    android:onClick="xiangCeOnClickForKSTP" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorAccent"
+            android:padding="10dp">
+            <RelativeLayout
+                android:id="@+id/rl_title_fltp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/colorAccent">
+
+                <TextView
+                    android:id="@+id/tv_fl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@+id/btnFLXiangCe"
+                    android:text="款式辅料"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/btnFLPaiZhao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/btnFLXiangCe"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_toLeftOf="@+id/btnFLXiangCe"
+                    android:layout_toStartOf="@+id/btnFLXiangCe"
+                    android:background="@drawable/paizhao"
+                    android:onClick="paiZhaoOnClickForKSTP" />
+
+                <ImageButton
+                    android:id="@+id/btnFLXiangCe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/xiangce"
+                    android:onClick="xiangCeOnClickForKSTP" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_img_fl_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/rl_title_fltp">
+
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="确定" />
     </LinearLayout>
 
 
