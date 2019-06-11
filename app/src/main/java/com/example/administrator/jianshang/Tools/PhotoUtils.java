@@ -281,4 +281,8 @@ public class PhotoUtils {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
+
+
+
+
 }
