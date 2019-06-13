@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:height="1dp"
+        android:gravity="bottom">
+        <shape>
+            <solid
+                android:color="@color/huise"/>
+        </shape>
+    </item>
+
+    <item
+        android:height="1dp"
+        android:gravity="top">
+        <shape>
+            <solid
+                android:color="@color/white"/>
+        </shape>
+    </item>
+
+    <item
+        android:height="50dp"
+        android:gravity="center">
+        <shape>
+            <solid
+                android:color="@color/qianhuise"/>
+        </shape>
+    </item>
+
+</layer-list>

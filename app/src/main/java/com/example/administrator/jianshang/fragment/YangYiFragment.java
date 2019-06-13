@@ -104,5 +104,6 @@ public class YangYiFragment extends BaseFragment {
 
         //添加默认分割线：高度为2px，颜色为灰色
         recyclerviewYangyi.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.VERTICAL));
+        recyclerviewYangyi.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
     }
 }

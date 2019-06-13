@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
@@ -37,8 +36,11 @@ dependencies {
         force = true
     }
     //compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
     mavenCentral()
     jcenter()
 }
+
+//apply plugin: 'kotlin-android-extensions'

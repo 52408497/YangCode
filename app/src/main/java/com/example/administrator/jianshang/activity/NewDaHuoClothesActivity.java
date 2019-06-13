@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -52,11 +53,14 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private static final int CODE_CAMERA_REQUEST = 0xa1;
     private static final int PERMISSION_CAMERA_SDCARD = 0xa2;
     private static final int PERMISSION_SDCARD = 0xa3;
+    private static final int CODE_CAMERA_CB_REQUEST = 0xa4;
+
 
     private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
     private RecyclerView imgKsListRecyclerview;
     private View oldView = null;
     private TextView oldTvFmView = null;
+    private ImageView ivCB;
 
     private String sfengmian = "";
 
@@ -64,7 +68,10 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private String imageFileName;
 
     private File fileUri;
+    private File fileUriCB;
+
     private Uri fileUriForContent;
+    private Uri fileUriCBForContent;
     private FileBean fileBean;
     private FileBean beDelFileBean = null;
 
@@ -92,6 +99,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         fileBeanListForKSToXC = new ArrayList<FileBean>();
 
         imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
+        ivCB = findViewById(R.id.iv_cb);
+
 
         //为recyclerview注册上下文菜单
         registerForContextMenu(imgKsListRecyclerview);
@@ -402,16 +411,20 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     }
                     break;
 
+                case CODE_CAMERA_CB_REQUEST:    //款式成本拍照回调
+                    showImages(fileUriCBForContent,ivCB);
+                    break;
+
             }
         }
     }
 
 
-//    private void showImages(Uri uri) {
-//
-//        Glide.with(NewDaHuoClothesActivity.this).load(uri).into(photo);
-//
-//    }
+    private void showImages(Uri uri,ImageView view) {
+
+        Glide.with(NewDaHuoClothesActivity.this).load(uri).into(view);
+
+    }
 
     /**
      * 检查设备是否存在SDCard的工具方法
@@ -470,7 +483,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         //倒序后设置选显示倒序第一行
         imgKsListRecyclerview.scrollToPosition(fileBeanListForKS.size() - 1);
         //添加默认分割线：高度为2px，颜色为灰色
-        imgKsListRecyclerview.addItemDecoration(new RecycleViewDivider(NewDaHuoClothesActivity.this, LinearLayoutManager.HORIZONTAL));
+        //imgKsListRecyclerview.addItemDecoration(new RecycleViewDivider(NewDaHuoClothesActivity.this, LinearLayoutManager.HORIZONTAL));
 
 
     }
@@ -567,6 +580,75 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                 fileBeanListForKS) {
             Log.e("---照片名,所有显示的照片：---", bean.getFileName());
 //            Log.e("---照片名,所有显示的照片：---", bean.getFileUri().toString());
+        }
+    }
+
+    public void addFuLiao(View view) {
+    }
+
+
+    /**
+     * 款式成本拍照
+     *
+     * @param view
+     */
+    public void paizhaoOnClickForKSCB(View view) {
+
+        permissions = new String[]{
+                Manifest.permission.CAMERA,                 //使用相机的权限
+                Manifest.permission.WRITE_EXTERNAL_STORAGE, //写入SD卡的权限
+                Manifest.permission.READ_EXTERNAL_STORAGE   //读取SD卡的权限
+        };
+
+
+        if (EasyPermissions.hasPermissions(NewDaHuoClothesActivity.this, permissions)) {
+            //有权限直接调用系统相机拍照
+            if (hasSdcard()) {
+
+
+
+
+                fileNameForCB = System.currentTimeMillis() + ".jpg";
+                fileUriCB = new File(Environment.getExternalStorageDirectory().getPath() +
+                        "/" + folderName + "/" + fileNameForCB);
+
+
+                fileUriCBForContent = Uri.fromFile(fileUriCB);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    //通过FileProvider创建一个content类型的Uri
+                    fileUriCBForContent = FileProvider.getUriForFile(
+                            NewDaHuoClothesActivity.this,
+                            "com.zz.fileprovider",
+                            fileUriCB);
+                }
+
+
+                //拍完照片自动执行onActivityResult回调方法
+                PhotoUtils.takePicture(
+                        NewDaHuoClothesActivity.this,
+                        fileUriCBForContent,
+                        CODE_CAMERA_CB_REQUEST);
+
+
+
+
+
+
+
+            } else {
+                //ToastUtils.showShort(this, "设备没有SD卡！");
+                Toast.makeText(
+                        NewDaHuoClothesActivity.this,
+                        "设备没有SD卡",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        } else {
+            //权限还未申请，申请权限
+            EasyPermissions.requestPermissions(this,
+                    "需要使用到相机和读写SD卡的权限",
+                    PERMISSION_CAMERA_SDCARD,
+                    permissions);
         }
     }
 }
