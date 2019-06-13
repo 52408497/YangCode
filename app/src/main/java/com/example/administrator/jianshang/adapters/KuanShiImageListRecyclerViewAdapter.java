@@ -1,6 +1,7 @@
 package com.example.administrator.jianshang.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.jianshang.R;
+import com.example.administrator.jianshang.Tools.ApplictionWidthAndHeight;
 import com.example.administrator.jianshang.activity.NewDaHuoClothesActivity;
+import com.example.administrator.jianshang.bean.FileBean;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,17 +32,56 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
 
     private int orientation;
     private final Context context;
-    private ArrayList<String> datas;
+    private  FileBean beRemoveData = null;
+
+
+    private ArrayList<FileBean> datas;
+
+
+    public void setDatas(ArrayList<FileBean> datas) {
+        this.datas = datas;
+    }
+
+    public void setBeRemoveData(FileBean beRemoveData) {
+        this.beRemoveData = beRemoveData;
+    }
+
+    public FileBean getBeRemoveData() {
+        return beRemoveData;
+    }
+
+
+    public ArrayList<FileBean> getDatas() {
+        return datas;
+    }
+
+    private int thisPosition = 0;
+
+    public int getthisPosition() {
+        return thisPosition;
+    }
+    public void setThisPosition(int thisPosition) {
+        this.thisPosition = thisPosition;
+    }
+
+
+    private int mPosition = 0;
+    public int getmPosition() {
+        return mPosition;
+    }
+
 
     /**
      * @param context
      * @param datas
      * @param orientation 0:HORIZONTAL 1:VERTICAL
      */
-    public KuanShiImageListRecyclerViewAdapter(Context context, ArrayList<String> datas, int orientation) {
+    public KuanShiImageListRecyclerViewAdapter(Context context, ArrayList<FileBean> datas, int orientation) {
         this.context = context;
         this.datas = datas;
         this.orientation = orientation;
+        //beRemoveData = new FileBean();
+
     }
 
     /**
@@ -55,7 +97,6 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
         LinearLayout linearLayout = itemView.findViewById(R.id.id_linear_layout);
         linearLayout.setOrientation(orientation);
 
-
         return new MyViewHodler(itemView);
     }
 
@@ -68,25 +109,37 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      */
     @Override
     public void onBindViewHolder(MyViewHodler holder, int position) {
-        //根据位置得到对应的数据
-        String data = datas.get(position);
-        holder.iv_icon.getLayoutParams().height = 600;
 
+//        final MyViewHodler recViewHolderLeft = (MyViewHodler) holder;
+//        if (position == getthisPosition()) {
+//            recViewHolderLeft.linearLayout.setBackgroundColor(
+//                    recViewHolderLeft
+//                            .linearLayout
+//                            .getResources()
+//                            .getColor(R.color.colorPrimaryDark));
+//        } else {
+//            recViewHolderLeft.linearLayout.setBackgroundColor(Color.WHITE);
+//        }
+
+
+
+        ApplictionWidthAndHeight applictionWidthAndHeight = new ApplictionWidthAndHeight(context);
+        int width = applictionWidthAndHeight.getWidth() / 3;
+        int height = applictionWidthAndHeight.getHeight() / 3;
+        //根据位置得到对应的数据
+        FileBean data = datas.get(position);
+        //holder.iv_icon.getLayoutParams().height = 600;
+        holder.iv_icon.getLayoutParams().height = height;
+        holder.iv_icon.getLayoutParams().width = width;
 
         //赋值数据
-        holder.tv_title.setText(data);
+        holder.tv_title.setText(data.getFileName());
 
-        String folderName = context.getString(R.string.my_photo_folder_name);
-        File fileUri = new File(Environment.getExternalStorageDirectory().getPath()
-                + "/" + folderName + "/" + datas.get(position));
-
-        //int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, context.getResources().getDisplayMetrics());
-        //int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 400f, context.getResources().getDisplayMetrics());
         Glide.with(context)
-                .load(Uri.fromFile(fileUri))
+                .load(data.getFileUri())
                 .placeholder(R.drawable.default_no_img)     //占位图
                 .error(R.drawable.default_no_img)           //出错的占位图
-                //.override(width, height)                    //图片显示的分辨率，像素值，可转化为dp再设
+                .override(width, height)                    //图片显示的分辨率，像素值，可转化为dp再设
 //              .animate(R.anim.glide_anim)                 //动画
                 .centerCrop()                               //图片显示样式
                 .fitCenter()                                //图片显示样式
@@ -111,7 +164,7 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      * @param position
      * @param data
      */
-    public void addData(int position, String data) {
+    public void addData(int position, FileBean data) {
         datas.add(position, data);
 
         //刷新适配器 插入操作
@@ -124,6 +177,10 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      * @param position
      */
     public void removeData(int position) {
+        beRemoveData = datas.get(position);
+
+        //setBeRemoveData(datas.get(position));
+
         datas.remove(position);
 
         //刷新适配器 移除操作
@@ -135,7 +192,7 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      * 根据新的列表刷新数据
      * @param datas
      */
-    public void updateData(ArrayList<String> datas){
+    public void updateData(ArrayList<FileBean> datas){
         this.datas = datas;
 
         //刷新适配器
@@ -143,8 +200,10 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
     }
 
 
+
     class MyViewHodler extends RecyclerView.ViewHolder {
 
+        private LinearLayout linearLayout;
         private ImageView iv_icon;
         private TextView tv_title;
 
@@ -152,18 +211,28 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
             super(itemView);
             iv_icon = itemView.findViewById(R.id.iv_icon);
             tv_title = itemView.findViewById(R.id.tv_title);
-
+            linearLayout = itemView.findViewById(R.id.id_linear_layout);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(view, datas.get(getLayoutPosition()));
+                        onItemClickListener.onItemClick(view, datas.get(getLayoutPosition()),getLayoutPosition());
                     }
                 }
             });
 
 
+            itemView.setLongClickable(true);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View view) {
+                    mPosition = getAdapterPosition();
+                    return false;
+                }
+            });
 //            iv_icon.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -194,7 +263,7 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      * 点击RecyclerView某条的监听接口
      */
     public interface OnItemClickListener {
-        public void onItemClick(View view, String data);
+        public void onItemClick(View view, FileBean data,int position);
     }
 
     /**
@@ -213,7 +282,7 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      * 点击RecyclerView中图片的监听接口
      */
     public interface OnImageClickListener {
-        public void onImageClick(View view, String data);
+        public void onImageClick(View view, FileBean data);
     }
 
     /**
@@ -232,7 +301,7 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
      * 点击RecyclerView中文字的监听接口
      */
     public interface OnTextClickListener {
-        public void onTextClick(View view, String data);
+        public void onTextClick(View view, FileBean data);
     }
 
     /**

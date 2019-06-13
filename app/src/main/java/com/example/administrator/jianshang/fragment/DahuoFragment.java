@@ -170,24 +170,33 @@ public class DahuoFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String yearInfo = etYearInfo.getText().toString().trim();
-                        //根据年份信息查询数据库是否存在
-                        cursor = yearsInfoDao.getYearsInfoForYearInfo(yearInfo);
-                        //若存在则提示该数据已存在，不能重复添加
-                        if (cursor.moveToFirst()) {
-                            Toast.makeText(mContext, "该数据已存在，不能重复添加", Toast.LENGTH_SHORT).show();
-                        } else {
-                            //若不存在则添加数据
-                            n = yearsInfoDao.addYearInfo(yearInfo);
-                            if (n > 0) {
-                                //添加数据
-                                adapter.addData(0, yearInfo);
-                                //重新添加每项点击事件监听
-                                setOnItemClickListener();
-                                Toast.makeText(mContext, "数据添加成功！", Toast.LENGTH_SHORT).show();
+                        if (yearInfo.equals("") || yearInfo ==null){
+                            Toast.makeText(mContext, "数据不能为空！", Toast.LENGTH_SHORT).show();
+                        }else {
+
+                            //根据年份信息查询数据库是否存在
+                            cursor = yearsInfoDao.getYearsInfoForYearInfo(yearInfo);
+                            //若存在则提示该数据已存在，不能重复添加
+                            if (cursor.moveToFirst()) {
+                                Toast.makeText(mContext, "该数据已存在，不能重复添加", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(mContext, "数据添加过程中出现错误，请重试！", Toast.LENGTH_SHORT).show();
+                                //若不存在则添加数据
+                                n = yearsInfoDao.addYearInfo(yearInfo);
+                                if (n > 0) {
+                                    //添加数据
+                                    adapter.addData(0, yearInfo);
+                                    //重新添加每项点击事件监听
+                                    setOnItemClickListener();
+                                    Toast.makeText(mContext, "数据添加成功！", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(mContext, "数据添加过程中出现错误，请重试！", Toast.LENGTH_SHORT).show();
+                                }
                             }
+
                         }
+
+
+
 
                     }
                 })

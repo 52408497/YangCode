@@ -3,6 +3,7 @@ package com.example.administrator.jianshang.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -14,8 +15,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -26,20 +30,22 @@ import com.example.administrator.jianshang.Tools.PhotoUtils;
 import com.example.administrator.jianshang.adapters.KuanShiImageListRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.RecycleViewDivider;
 import com.example.administrator.jianshang.adapters.TimeRecyclerViewAdapter;
+import com.example.administrator.jianshang.bean.FileBean;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
-    private ImageView photo;
     private String timeData;
 
     private static final int CODE_GALLERY_REQUEST = 0xa0;
@@ -49,25 +55,29 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
     private RecyclerView imgKsListRecyclerview;
+    private View oldView = null;
+    private String sfengmian = "";
 
-    String[] permissions;
+    private String[] permissions;
     private String imageFileName;
+
     private File fileUri;
-    //private Uri imageUri;           //
     private Uri fileUriForContent;
+    private FileBean fileBean;
+    private FileBean beDelFileBean = null;
+
+    private String oldPath = "";
+    private String newPath = "";
+    private String folderName = "";
 
 
-    private String oldPath="";
-    private String newPath="";
-    private String folderName="";
 
-    private ArrayList<String> fileUriForKSList;      //款式图片uri集合
-    private ArrayList<String> fileNameForKSList;     //款式图片名集合
-    private ArrayList<String> fileNameForFLList;     //辅料图片名集合
+    private ArrayList<FileBean> fileBeanListForKS;       //所有款式图片集合
+    private ArrayList<FileBean> fileBeanListForKSToXC;   //相册款式图片集合
+
     private String fileNameForCB;               //成本图片名
 
-
-
+    private int positionForOld = 0;     //点击图片前的游标
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,21 +89,23 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         creatFolder(folderName);
 
 
-        photo = findViewById(R.id.iv_test);
-
-        fileUriForKSList = new ArrayList<String>();
-        fileNameForKSList = new ArrayList<String>();
-        fileNameForFLList = new ArrayList<String>();
-
+        fileBeanListForKS = new ArrayList<FileBean>();
+        fileBeanListForKSToXC = new ArrayList<FileBean>();
 
         imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
+
+        //为recyclerview注册上下文菜单
+        registerForContextMenu(imgKsListRecyclerview);
+
+        //使用RecyclerView显示数据
         useRecyclerViewToShow();
 
+        //添加每项点击事件监听
+        setOnItemClickForCSListener();
 
         Intent intent = getIntent();
         timeData = intent.getStringExtra("yearInfo");
     }
-
 
 
     private void creatFolder(String folderName) {
@@ -103,12 +115,97 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             if (!appDir.exists()) {
                 appDir.mkdir();
             }
+        }
+    }
 
-//            imageFileName = System.currentTimeMillis() + ".jpg";
-//            fileUri = new File(Environment.getExternalStorageDirectory().getPath() +
-//                    "/" + folderName + "/" + imageFileName);
+
+    /**
+     * 上下文菜单添加删除按钮
+     *
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add(0, 0, 0, "删除");
+    }
+
+
+    /**
+     * 上下文菜单删除操作
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        //初始化oldView
+        reSetOldView();
+
+        int delPosition = kuanShiImageListRecyclerViewAdapter.getmPosition();
+        beDelFileBean = fileBeanListForKS.get(delPosition); //将要被删除的图片
+
+        fileBeanListForKS.remove(beDelFileBean);
+
+        for (FileBean b :
+                fileBeanListForKSToXC) {
+            if (b.getFileName().trim().equals(beDelFileBean.getFileName().trim())) {
+                fileBeanListForKSToXC.remove(b);
+                break;
+            }
 
         }
+
+        kuanShiImageListRecyclerViewAdapter.updateData(fileBeanListForKS);
+        imgKsListRecyclerview.scrollToPosition(fileBeanListForKS.size() - 1);
+        beDelFileBean = null;
+
+        return true;
+    }
+
+    /**
+     * 初始化oldView
+     */
+    private void reSetOldView() {
+        if (oldView != null) {
+            oldView.findViewById(R.id.id_linear_layout)
+                    .setBackgroundColor(Color.WHITE);
+            oldView = null;
+            sfengmian="";
+        }
+    }
+
+
+    /**
+     * 点击款式图某项
+     */
+    private void setOnItemClickForCSListener() {
+        kuanShiImageListRecyclerViewAdapter.setOnItemClickListener(new KuanShiImageListRecyclerViewAdapter.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(View view, FileBean data, int position) {
+
+                if (oldView != null) {
+                    if (view != oldView) {
+                        view.findViewById(R.id.id_linear_layout)
+                                .setBackgroundColor(getResources().getColor(R.color.blanchedalmond));
+                        oldView.findViewById(R.id.id_linear_layout)
+                                .setBackgroundColor(Color.WHITE);
+                        oldView = view;
+
+                    }
+
+                } else {
+                    view.findViewById(R.id.id_linear_layout)
+                            .setBackgroundColor(getResources().getColor(R.color.blanchedalmond));
+                    oldView = view;
+                }
+
+                sfengmian = data.getFileName(); //设置封面图片
+            }
+        });
     }
 
 
@@ -128,7 +225,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
 
         if (EasyPermissions.hasPermissions(NewDaHuoClothesActivity.this, permissions)) {
-            //拍照保存并显示图片
 
             //有权限直接调用系统相机拍照
             if (hasSdcard()) {
@@ -136,7 +232,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                 imageFileName = System.currentTimeMillis() + ".jpg";
                 fileUri = new File(Environment.getExternalStorageDirectory().getPath() +
                         "/" + folderName + "/" + imageFileName);
-
 
 
                 fileUriForContent = Uri.fromFile(fileUri);
@@ -149,12 +244,19 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                 }
 
 
-
                 //拍完照片自动执行onActivityResult回调方法
-                PhotoUtils.takePicture(NewDaHuoClothesActivity.this, fileUriForContent, CODE_CAMERA_REQUEST);
+                PhotoUtils.takePicture(
+                        NewDaHuoClothesActivity.this,
+                        fileUriForContent,
+                        CODE_CAMERA_REQUEST);
+
             } else {
                 //ToastUtils.showShort(this, "设备没有SD卡！");
-                Toast.makeText(NewDaHuoClothesActivity.this, "设备没有SD卡", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        NewDaHuoClothesActivity.this,
+                        "设备没有SD卡",
+                        Toast.LENGTH_SHORT)
+                        .show();
             }
 
         } else {
@@ -180,9 +282,9 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         };
 
         if (EasyPermissions.hasPermissions(NewDaHuoClothesActivity.this, permissions)) {
-//            (new ApplictionWidthAndHeight(NewDaHuoClothesActivity.this)).getScreenWidth()/3
-            ApplictionWidthAndHeight applictionWidthAndHeight = new ApplictionWidthAndHeight(NewDaHuoClothesActivity.this);
 
+            ApplictionWidthAndHeight applictionWidthAndHeight = new ApplictionWidthAndHeight(
+                    NewDaHuoClothesActivity.this);
 
             Matisse.from(NewDaHuoClothesActivity.this)
                     .choose(MimeType.allOf()) // 选择 mime 的类型
@@ -195,15 +297,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     .theme(R.style.Matisse_Zhihu)//主题
                     .capture(false)//是否提供拍照功能
                     .forResult(CODE_GALLERY_REQUEST); // 设置作为标记的请求码
-
-
-
-//            PhotoUtils.openPic(NewDaHuoClothesActivity.this, CODE_GALLERY_REQUEST);
-//            //拷贝文件
-//            boolean b = FileUtils.copyFile(oldPath, newPath);
-//
-//            //kuanShiImageListRecyclerViewAdapter.addData(0,imageFileName);
-//            kuanShiImageListRecyclerViewAdapter.updateData(fileNameForKSList);
 
         } else {
             //权限还未申请，申请权限
@@ -243,71 +336,52 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             switch (requestCode) {
                 case CODE_CAMERA_REQUEST://拍照完成回调
 
-//                    Log.e("URI---imageUri:",fileUriForContent.toString());
-//                    Log.e("URI---fileUri:",fileUri.toString());
-//                    Log.e("URI---fileUriPath:",Uri.fromFile(fileUri).toString());
-
                     fileUriForFile = Uri.fromFile(fileUri);
+
                     if (fileUriForFile != null) {
-                        //fileNameForKSList.add(imageFileName);
-                        // 将款式图片名添加至款式图片名列表
-                        fileNameForKSList = addImageForList(fileNameForKSList,imageFileName);
 
-                        kuanShiImageListRecyclerViewAdapter.updateData(fileNameForKSList);
+                        fileBean = new FileBean();
+                        fileBean.setFileName(imageFileName);
+                        fileBean.setFileUri(fileUriForContent);
 
-                        //kuanShiImageListRecyclerViewAdapter.addData(0,imageFileName);
+                        fileBeanListForKS = addFileBeanToList(fileBean, fileBeanListForKS);
 
-                        //showImages(uri);
+                        kuanShiImageListRecyclerViewAdapter.updateData(fileBeanListForKS);
+
+                        //初始化oldView
+                        reSetOldView();
+
+                        imgKsListRecyclerview.scrollToPosition(fileBeanListForKS.size() - 1);
                     }
-
-                    //Log.e("----MY_URI:----",uri+"");
 
                     break;
                 case CODE_GALLERY_REQUEST://访问相册完成回调
                     if (hasSdcard()) {
 
 
-                    List<Uri> mSelected = Matisse.obtainResult(data);
+                        List<Uri> mSelected = Matisse.obtainResult(data);
 
                         for (Uri u : mSelected) {
 
                             String sPath = PhotoUtils.getPath(NewDaHuoClothesActivity.this, u);
-
-//                            Log.e("SelectedUir:",u.getPath().toString());
-//                            Log.e("SelectedUir:---",sPath);
-
-
                             String sName = getFileNameWithSuffix(sPath);    //获取文件名
 
-                            // 将款式图片名添加至款式图片名列表
-                            fileNameForKSList = addImageForList(fileNameForKSList,imageFileName);
+                            fileBean = new FileBean();
+                            fileBean.setFileName(sName);
+                            fileBean.setFileUri(u);
 
+                            fileBeanListForKS = addFileBeanToList(fileBean, fileBeanListForKS);
+                            // 将从相册中选择的款式图片添加至列表
+                            fileBeanListForKSToXC = addFileBeanToList(fileBean, fileBeanListForKSToXC);
+
+                            kuanShiImageListRecyclerViewAdapter.updateData(fileBeanListForKS);
+
+                            //初始化oldView
+                            reSetOldView();
+
+                            imgKsListRecyclerview.scrollToPosition(fileBeanListForKS.size() - 1);
                         }
 
-
-
-
-
-//                        uri = Uri.parse(PhotoUtils.getPath(NewDaHuoClothesActivity.this, data.getData()));
-//
-//
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-//                            uri = FileProvider.getUriForFile(NewDaHuoClothesActivity.this, "com.zz.fileprovider", new File(uri.getPath()));
-//
-//                        if (uri != null) {
-//
-//                            oldPath = PhotoUtils.getPathNoPathHead(NewDaHuoClothesActivity.this, data.getData());
-//                            newPath = Environment.getExternalStorageDirectory().getPath() + "/"+folderName+"/";
-//
-//                            //将款式图片名添加至款式图片名列表
-//                            imageFileName = getFileNameWithSuffix(oldPath);
-//                            //fileNameForKSList.add(imageFileName);
-//                            fileNameForKSList = addImageForList(fileNameForKSList,imageFileName);
-//
-//                            //kuanShiImageListRecyclerViewAdapter.addData(0,imageFileName);
-//                            //showImages(uri);
-//
-//                        }
 
                     } else {
                         Toast.makeText(NewDaHuoClothesActivity.this, "设备没有SD卡!!", Toast.LENGTH_SHORT).show();
@@ -319,11 +393,11 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     }
 
 
-    private void showImages(Uri uri) {
-
-        Glide.with(NewDaHuoClothesActivity.this).load(uri).into(photo);
-
-    }
+//    private void showImages(Uri uri) {
+//
+//        Glide.with(NewDaHuoClothesActivity.this).load(uri).into(photo);
+//
+//    }
 
     /**
      * 检查设备是否存在SDCard的工具方法
@@ -371,19 +445,16 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     }
 
+
     private void useRecyclerViewToShow() {
-
         //设置RecyclerView的适配器
-
-        kuanShiImageListRecyclerViewAdapter = new KuanShiImageListRecyclerViewAdapter(NewDaHuoClothesActivity.this, fileNameForKSList,1);
+        kuanShiImageListRecyclerViewAdapter = new KuanShiImageListRecyclerViewAdapter(NewDaHuoClothesActivity.this, fileBeanListForKS, 1);
         imgKsListRecyclerview.setAdapter(kuanShiImageListRecyclerViewAdapter);
-
         //LayoutManager
         //new LinearLayoutManager 参数 1、上下文 2、方向 3、是否倒序
-        imgKsListRecyclerview.setLayoutManager(new LinearLayoutManager(NewDaHuoClothesActivity.this, LinearLayoutManager.HORIZONTAL, true));
+        imgKsListRecyclerview.setLayoutManager(new LinearLayoutManager(NewDaHuoClothesActivity.this, LinearLayoutManager.HORIZONTAL, false));
         //倒序后设置选显示倒序第一行
-        imgKsListRecyclerview.scrollToPosition(fileNameForKSList.size()-1);
-
+        imgKsListRecyclerview.scrollToPosition(fileBeanListForKS.size() - 1);
         //添加默认分割线：高度为2px，颜色为灰色
         imgKsListRecyclerview.addItemDecoration(new RecycleViewDivider(NewDaHuoClothesActivity.this, LinearLayoutManager.HORIZONTAL));
 
@@ -393,23 +464,44 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     /**
      * 查询文件名是否已存在与列表，若不存在则添加进列表
+     *
      * @param list
      * @param fileName
      * @return
      */
-    public ArrayList<String> addImageForList(ArrayList<String> list,String fileName){
+    public ArrayList<String> addImageForList(ArrayList<String> list, String fileName) {
         boolean isHave = false;
         for (String name : list) {
-            if (name.equals(fileName.trim())){
+            if (name.equals(fileName.trim())) {
                 isHave = true;
             }
         }
-        if(!isHave){
+        if (!isHave) {
             list.add(fileName);
         }
         return list;
     }
 
+
+    /**
+     * 查询文件名是否已存在与列表，若不存在则添加进列表
+     *
+     * @param fileBean
+     * @param fileBeanList
+     * @return
+     */
+    private ArrayList<FileBean> addFileBeanToList(FileBean fileBean, ArrayList<FileBean> fileBeanList) {
+        boolean isHave = false;
+        for (FileBean bean : fileBeanList) {
+            if (bean.getFileName().equals(fileBean.getFileName())) {
+                isHave = true;
+            }
+        }
+        if (!isHave) {
+            fileBeanList.add(fileBean);
+        }
+        return fileBeanList;
+    }
 
 
     /**
@@ -421,6 +513,58 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             return pathandname.substring(start + 1);
         } else {
             return null;
+        }
+    }
+
+
+    /**
+     * 确定保存按钮
+     * @param view
+     */
+    public void submitOnClick(View view) {
+
+
+        //拷贝相册里的照片到本应用专用的图片文件夹中
+
+
+
+        //保存数据到数据库
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        for (FileBean bean :
+                fileBeanListForKSToXC) {
+            Log.e("---照片名,从相册中选中的：---", bean.getFileName());             //  文件名
+//            Log.e("---照片名,从相册中选中的：---", bean.getFileUri().toString());   //  content形式的URI
+
+//            String sPath1 = PhotoUtils.getPath(                                     //  file:///形式的URI
+//                    NewDaHuoClothesActivity.this,
+//                    bean.getFileUri());
+//            Log.e("---照片名,从相册中选中的：---", sPath1);
+
+//            String sPath2 = PhotoUtils.getPathNoPathHead(                           //  绝对路径的URI
+//                    NewDaHuoClothesActivity.this,
+//                    bean.getFileUri());
+//
+//            Log.e("---照片名,从相册中选中的：---", sPath2);
+        }
+
+
+        for (FileBean bean :
+                fileBeanListForKS) {
+            Log.e("---照片名,所有显示的照片：---", bean.getFileName());
+//            Log.e("---照片名,所有显示的照片：---", bean.getFileUri().toString());
         }
     }
 }

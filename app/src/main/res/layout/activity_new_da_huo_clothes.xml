@@ -152,13 +152,8 @@
                     android:layout_marginTop="15dp"
                     android:background="@drawable/xiangce"
                     android:onClick="xiangCeOnClickForKSTP" />
-            </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/iv_test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_title_kstp" />
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_img_ks_list"
@@ -280,6 +275,7 @@
 
 
         <Button
+            android:onClick="submitOnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="确定" />
