@@ -133,7 +133,8 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
         holder.iv_icon.getLayoutParams().width = width;
 
         //赋值数据
-        holder.tv_title.setText(data.getFileName());
+        holder.tv_title.setText("");
+        //holder.tv_title.setText(data.getFileName());
 
         Glide.with(context)
                 .load(data.getFileUri())

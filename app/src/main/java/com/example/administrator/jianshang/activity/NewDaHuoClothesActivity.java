@@ -56,6 +56,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
     private RecyclerView imgKsListRecyclerview;
     private View oldView = null;
+    private TextView oldTvFmView = null;
+
     private String sfengmian = "";
 
     private String[] permissions;
@@ -70,14 +72,11 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private String newPath = "";
     private String folderName = "";
 
-
-
     private ArrayList<FileBean> fileBeanListForKS;       //所有款式图片集合
     private ArrayList<FileBean> fileBeanListForKSToXC;   //相册款式图片集合
 
     private String fileNameForCB;               //成本图片名
 
-    private int positionForOld = 0;     //点击图片前的游标
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +172,10 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             oldView.findViewById(R.id.id_linear_layout)
                     .setBackgroundColor(Color.WHITE);
             oldView = null;
-            sfengmian="";
+            sfengmian = "";
+
+            oldTvFmView = null;
+
         }
     }
 
@@ -194,13 +196,25 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         oldView.findViewById(R.id.id_linear_layout)
                                 .setBackgroundColor(Color.WHITE);
                         oldView = view;
+                    }
+                    if (oldTvFmView != view.findViewById(R.id.tv_title)) {
+                        ((TextView) view.findViewById(R.id.tv_title)).setText("设为封面");
+                        ((TextView) view.findViewById(R.id.tv_title)).setTextColor(Color.RED);
 
+                        oldTvFmView.setText("");
+                        oldTvFmView.setTextColor(Color.WHITE);
+
+                        oldTvFmView = view.findViewById(R.id.tv_title);
                     }
 
                 } else {
                     view.findViewById(R.id.id_linear_layout)
                             .setBackgroundColor(getResources().getColor(R.color.blanchedalmond));
                     oldView = view;
+
+                    oldTvFmView = view.findViewById(R.id.tv_title);
+                    oldTvFmView.setText("设为封面");
+                    oldTvFmView.setTextColor(Color.RED);
                 }
 
                 sfengmian = data.getFileName(); //设置封面图片
@@ -519,6 +533,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     /**
      * 确定保存按钮
+     *
      * @param view
      */
     public void submitOnClick(View view) {
@@ -527,20 +542,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         //拷贝相册里的照片到本应用专用的图片文件夹中
 
 
-
         //保存数据到数据库
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         for (FileBean bean :
