@@ -185,7 +185,8 @@ public class DahuoFragment extends BaseFragment {
                                 n = yearsInfoDao.addYearInfo(yearInfo);
                                 if (n > 0) {
                                     //添加数据
-                                    adapter.addData(0, yearInfo);
+                                    adapter.addData(datas.size(), yearInfo);
+                                    recyclerviewTime.scrollToPosition(datas.size()-1);
                                     //重新添加每项点击事件监听
                                     setOnItemClickListener();
                                     Toast.makeText(mContext, "数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -221,9 +222,11 @@ public class DahuoFragment extends BaseFragment {
 
         //LayoutManager
         //new LinearLayoutManager 参数 1、上下文 2、方向 3、是否倒序
-        recyclerviewTime.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        linearLayoutManager.setStackFromEnd(true);//列表再底部开始展示，反转后由上面开始展示
+        recyclerviewTime.setLayoutManager(linearLayoutManager);
         //倒序后设置选显示倒序第一行
-        //recyclerviewTime.scrollToPosition(datas.size()-1);
+        recyclerviewTime.scrollToPosition(datas.size()-1);
 
         //添加默认分割线：高度为2px，颜色为灰色
         recyclerviewTime.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.VERTICAL));
