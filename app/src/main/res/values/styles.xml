@@ -28,5 +28,13 @@
         <item name="android:layout_weight">1</item>
     </style>
 
+    <style name="AnimHorizontal" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_left_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_left_out</item>
+    </style>
 
+    <style name="AnimVertical" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_center_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_center_out</item>
+    </style>
 </resources>

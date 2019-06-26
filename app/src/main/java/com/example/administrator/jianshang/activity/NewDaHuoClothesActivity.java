@@ -1,36 +1,43 @@
 package com.example.administrator.jianshang.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.Tools.ApplictionWidthAndHeight;
-import com.example.administrator.jianshang.Tools.FileUtils;
+import com.example.administrator.jianshang.Tools.CommonPopupWindow;
 import com.example.administrator.jianshang.Tools.PhotoUtils;
 import com.example.administrator.jianshang.adapters.KuanShiImageListRecyclerViewAdapter;
-import com.example.administrator.jianshang.adapters.RecycleViewDivider;
-import com.example.administrator.jianshang.adapters.TimeRecyclerViewAdapter;
 import com.example.administrator.jianshang.bean.FileBean;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
@@ -38,9 +45,9 @@ import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import android.widget.Spinner;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -54,6 +61,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private static final int PERMISSION_CAMERA_SDCARD = 0xa2;
     private static final int PERMISSION_SDCARD = 0xa3;
     private static final int CODE_CAMERA_CB_REQUEST = 0xa4;
+    private static final int CODE_CAMERA_FL_REQUEST = 0xa5;
+
 
 
     private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
@@ -62,6 +71,18 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private TextView oldTvFmView = null;
     private ImageView ivCB;
 
+    CommonPopupWindow popupWindow;
+
+    //    //-----悬浮窗控件------------------
+    private EditText etName;            //辅料名称
+    private EditText etJiage;           //价格
+    private Spinner spGongyinshang;     //供应商
+    private ImageButton ibPaiZhao;      //拍照按钮
+    private ImageView ivTuPian;         //辅料图片
+    private Button btnOk;               //确定按钮
+    private Button btnQx;               //取消按钮
+//    //----------------------------------
+
     private String sfengmian = "";
 
     private String[] permissions;
@@ -69,9 +90,12 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     private File fileUri;
     private File fileUriCB;
+    private File fileUriFL;
 
     private Uri fileUriForContent;
     private Uri fileUriCBForContent;
+    private Uri fileUriFLForContent;
+
     private FileBean fileBean;
     private FileBean beDelFileBean = null;
 
@@ -83,7 +107,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private ArrayList<FileBean> fileBeanListForKSToXC;   //相册款式图片集合
 
     private String fileNameForCB;               //成本图片名
-
+    private String fileNameForFL;               //辅料图片名
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +125,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
         ivCB = findViewById(R.id.iv_cb);
 
-
         //为recyclerview注册上下文菜单
         registerForContextMenu(imgKsListRecyclerview);
 
@@ -113,6 +136,9 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
         Intent intent = getIntent();
         timeData = intent.getStringExtra("yearInfo");
+
+        //initPopupWindow();
+        //initPop();
     }
 
 
@@ -412,15 +438,18 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     break;
 
                 case CODE_CAMERA_CB_REQUEST:    //款式成本拍照回调
-                    showImages(fileUriCBForContent,ivCB);
+                    showImages(fileUriCBForContent, ivCB);
                     break;
 
+                case CODE_CAMERA_FL_REQUEST:    //辅料图片拍照回调
+                    showImages(fileUriFLForContent,ivTuPian);
+                    break;
             }
         }
     }
 
 
-    private void showImages(Uri uri,ImageView view) {
+    private void showImages(Uri uri, ImageView view) {
 
         Glide.with(NewDaHuoClothesActivity.this).load(uri).into(view);
 
@@ -583,7 +612,213 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         }
     }
 
+
     public void addFuLiao(View view) {
+//弹出PopupWindow
+
+        // popupWindow.showAsDropDown(view);
+
+
+                initPopupWindow(view);
+
+
+
+
+        //initPopupWindow(view);
+
+
+
+
+    }
+
+
+    public void initPopupWindow(View view) {
+
+        ApplictionWidthAndHeight widthAndHeight = new ApplictionWidthAndHeight(NewDaHuoClothesActivity.this);
+
+
+        popupWindow = new CommonPopupWindow.Builder(NewDaHuoClothesActivity.this)
+                //设置PopupWindow布局
+                .setView(R.layout.activity_add_fu_liao)
+                //设置宽高
+                .setWidthAndHeight(widthAndHeight.getWidth(), widthAndHeight.getHeight() / 10 * 9)
+                // .setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT,
+                //         ViewGroup.LayoutParams.WRAP_CONTENT)
+                //设置动画
+                .setAnimationStyle(R.style.AnimVertical)
+                //设置背景颜色，取值范围0.0f-1.0f 值越小越暗 1.0f为透明
+                .setBackGroundLevel(0.5f)
+                //设置PopupWindow里的子View及点击事件
+                .setViewOnclickListener(new CommonPopupWindow.ViewInterface() {
+                    @Override
+                    public void getChildView(final View view, int layoutResId) {
+
+
+                        etName = (EditText) view.findViewById(R.id.et_name);           //辅料名称
+                        etJiage = (EditText) view.findViewById(R.id.et_jiage);           //价格
+                        spGongyinshang = (Spinner) view.findViewById(R.id.sp_gongyinshang); //供应商
+                        ibPaiZhao = (ImageButton) view.findViewById(R.id.ib_paizhao);      //拍照按钮
+                        ivTuPian = (ImageView) view.findViewById(R.id.iv_tp);         //辅料图片
+                        btnOk = (Button) view.findViewById(R.id.btn_ok);               //确定按钮
+                        btnQx = (Button) view.findViewById(R.id.btn_qx);               //取消按钮
+
+
+                        String[] gys = {
+                            "贵宜典","姚明织带","画龙点睛","三鼎织带"
+                        }  ;
+
+
+
+                        spGongyinshang.setAdapter(
+                                new ArrayAdapter<String>(
+                                      view.getContext()  ,
+                                android.R.layout.simple_dropdown_item_1line,
+                                android.R.id.text1,gys)
+                        );
+
+                        //辅料拍照
+                        ibPaiZhao.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+
+                                permissions = new String[]{
+                                        Manifest.permission.CAMERA,                 //使用相机的权限
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE, //写入SD卡的权限
+                                        Manifest.permission.READ_EXTERNAL_STORAGE   //读取SD卡的权限
+                                };
+
+                                if (EasyPermissions.hasPermissions(v.getContext(), permissions)) {
+
+
+                                    //有权限直接调用系统相机拍照
+                                    if (hasSdcard()) {
+                                        fileNameForFL = System.currentTimeMillis() + ".jpg";
+                                        fileUriFL = new File(Environment.getExternalStorageDirectory().getPath() +
+                                                "/" + folderName + "/" + fileNameForFL);
+
+
+                                        fileUriFLForContent = Uri.fromFile(fileUriFL);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            //通过FileProvider创建一个content类型的Uri
+                                            fileUriFLForContent = FileProvider.getUriForFile(
+                                                    NewDaHuoClothesActivity.this,
+                                                    "com.zz.fileprovider",
+                                                    fileUriFL);
+                                        }
+
+
+                                        //拍完照片自动执行onActivityResult回调方法
+                                        PhotoUtils.takePicture(
+                                                NewDaHuoClothesActivity.this,
+                                                fileUriFLForContent,
+                                                CODE_CAMERA_FL_REQUEST);
+
+
+
+
+                                    }else {
+                                        //ToastUtils.showShort(this, "设备没有SD卡！");
+                                        Toast.makeText(
+                                                v.getContext(),
+                                                "设备没有SD卡",
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+
+
+
+
+
+
+                                }else {
+                                    //权限还未申请，申请权限
+                                    EasyPermissions.requestPermissions((Activity) v.getContext(),"需要使用到相机和读写SD卡的权限",PERMISSION_CAMERA_SDCARD,
+                                            permissions);
+
+                                }
+
+                            }
+                        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        btnOk.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(NewDaHuoClothesActivity.this,"你点击了确定",Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                popupWindow.dismiss();
+
+                            }
+                        });
+
+                        btnQx.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(NewDaHuoClothesActivity.this,"你点击了取消",Toast.LENGTH_SHORT).show();
+
+                                popupWindow.dismiss();
+                            }
+                        });
+
+
+                    }
+                })
+                //设置外部是否可点击 默认是true
+                .setOutsideTouchable(true)
+                //开始构建
+                .create();
+
+        //popupWindow.showAsDropDown(view);
+
+
+
+
+        popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
+
+//        showAsDropDown是显示在参照物anchor的周围
+//        xoff、yoff分别是X轴、Y轴的偏移量，
+//        如果不设置xoff、yoff，默认是显示在anchor的下方；
+//        showAtLocation是设置在父控件的位置，
+//        如设置Gravity.BOTTOM表示在父控件底部弹出，
+//        xoff、yoff也是X轴、Y轴的偏移量。
+
+
+//        public void showAsDropDown(View anchor)
+//
+//        public void showAsDropDown(View anchor, int xoff, int yoff)
+//
+//        public void showAtLocation(View parent, int gravity, int x, int y)
+
     }
 
 
@@ -606,8 +841,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             if (hasSdcard()) {
 
 
-
-
                 fileNameForCB = System.currentTimeMillis() + ".jpg";
                 fileUriCB = new File(Environment.getExternalStorageDirectory().getPath() +
                         "/" + folderName + "/" + fileNameForCB);
@@ -628,11 +861,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         NewDaHuoClothesActivity.this,
                         fileUriCBForContent,
                         CODE_CAMERA_CB_REQUEST);
-
-
-
-
-
 
 
             } else {

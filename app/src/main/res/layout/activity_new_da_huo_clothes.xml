@@ -16,37 +16,38 @@
         android:padding="5dp">
 
         <RelativeLayout
-            android:layout_marginVertical="8dp"
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginVertical="8dp"
+            android:background="@color/white"
             android:gravity="left"
             android:padding="10dp">
-        <RelativeLayout
-            android:background="@drawable/beautiful_linearlayout_border"
-            android:id="@+id/rl_title_jbxx"
-            android:layout_width="match_parent"
-            android:layout_height="52dp">
-            <TextView
-                android:layout_marginLeft="8dp"
-                android:id="@+id/tv_title_jbxx"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="15dp"
-                android:text="基本信息"
-                android:textSize="20dp" />
-        </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_title_jbxx"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/beautiful_linearlayout_border">
+
+                <TextView
+                    android:id="@+id/tv_title_jbxx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="15dp"
+                    android:text="基本信息"
+                    android:textSize="20dp" />
+            </RelativeLayout>
 
 
             <TextView
-                android:layout_marginLeft="8dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="10dp"
                 android:id="@+id/tv_kh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rl_title_jbxx"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
                 android:text="款号："
                 android:textSize="20dp" />
 
@@ -63,10 +64,10 @@
 
             <TextView
                 android:id="@+id/tv_ybh"
-                android:layout_alignLeft="@+id/tv_kh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/et_ybh"
+                android:layout_alignLeft="@+id/tv_kh"
                 android:layout_below="@+id/tv_mc"
                 android:text="样板号："
                 android:textSize="20dp" />
@@ -74,10 +75,10 @@
 
             <TextView
                 android:id="@+id/tv_bz"
-                android:layout_alignLeft="@+id/tv_kh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/et_bz"
+                android:layout_alignLeft="@+id/tv_kh"
                 android:layout_below="@+id/tv_ybh"
                 android:text="备注："
                 android:textSize="20dp" />
@@ -85,76 +86,77 @@
 
             <EditText
                 android:id="@+id/et_kh"
-                android:layout_marginRight="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/tv_kh"
-                android:layout_toRightOf="@id/tv_mc"
+                android:layout_below="@+id/rl_title_jbxx"
+                android:layout_marginRight="8dp"
+                android:layout_toRightOf="@+id/tv_mc"
                 android:hint="请输入款号"
                 android:imeOptions="actionNext"
                 android:nextFocusForward="@+id/et_mc"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
 
             <EditText
-                android:layout_alignRight="@+id/et_kh"
                 android:id="@+id/et_mc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/et_kh"
-                android:layout_toRightOf="@+id/tv_mc"
+                android:layout_alignLeft="@+id/et_kh"
+                android:layout_alignRight="@+id/et_kh"
+                android:layout_below="@+id/et_kh"
                 android:hint="请输入款式名称"
                 android:imeOptions="actionNext"
                 android:nextFocusForward="@+id/et_ybh"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
             <EditText
-                android:layout_alignRight="@+id/et_kh"
                 android:id="@+id/et_ybh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/et_mc"
-                android:layout_toRightOf="@+id/tv_mc"
+                android:layout_alignLeft="@+id/et_mc"
+                android:layout_alignRight="@+id/et_mc"
+                android:layout_below="@+id/et_mc"
                 android:hint="请输入样板号"
                 android:imeOptions="actionNext"
                 android:nextFocusForward="@+id/et_bz"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
             <EditText
-                android:layout_alignRight="@+id/et_kh"
                 android:id="@+id/et_bz"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/et_ybh"
-                android:layout_toRightOf="@+id/tv_mc"
+                android:layout_alignLeft="@+id/et_ybh"
+                android:layout_alignRight="@+id/et_ybh"
+                android:layout_below="@+id/et_ybh"
                 android:hint="请输入备注信息"
                 android:imeOptions="actionDone"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginVertical="8dp"
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginVertical="8dp"
+            android:background="@color/white"
             android:padding="10dp">
 
             <RelativeLayout
-                android:background="@drawable/beautiful_linearlayout_border"
                 android:id="@+id/rl_title_kstp"
                 android:layout_width="match_parent"
-                android:layout_height="52dp">
+                android:layout_height="52dp"
+                android:background="@drawable/beautiful_linearlayout_border">
 
                 <TextView
-                    android:layout_marginLeft="8dp"
                     android:id="@+id/tv_kstp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignTop="@+id/btnPaiZhao"
+                    android:layout_marginLeft="8dp"
                     android:text="款式图片"
                     android:textSize="20dp" />
 
@@ -184,38 +186,38 @@
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
                 android:id="@+id/recyclerview_img_ks_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/rl_title_kstp">
+                android:layout_below="@+id/rl_title_kstp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
             </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@color/white"
-            android:layout_marginVertical="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginVertical="8dp"
+            android:background="@color/white"
             android:padding="10dp">
 
             <RelativeLayout
-                android:background="@drawable/beautiful_linearlayout_border"
                 android:id="@+id/rl_title_cbtp"
                 android:layout_width="match_parent"
-                android:layout_height="52dp">
+                android:layout_height="52dp"
+                android:background="@drawable/beautiful_linearlayout_border">
 
                 <TextView
                     android:id="@+id/tv_cb"
-                    android:layout_marginLeft="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignTop="@+id/btnCBPaiZhao"
+                    android:layout_marginLeft="8dp"
                     android:text="款式成本"
                     android:textSize="20dp" />
 
@@ -233,36 +235,36 @@
             </RelativeLayout>
 
             <ImageView
-                android:layout_below="@+id/rl_title_cbtp"
-                android:layout_centerHorizontal="true"
                 android:id="@+id/iv_cb"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_title_cbtp"
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
 
         <RelativeLayout
-            android:background="@color/white"
-            android:layout_marginVertical="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
+            android:layout_marginVertical="8dp"
+            android:background="@color/white"
             android:padding="10dp">
 
             <RelativeLayout
-                android:background="@drawable/beautiful_linearlayout_border"
                 android:id="@+id/rl_title_fltp"
                 android:layout_width="match_parent"
-                android:layout_height="52dp">
+                android:layout_height="52dp"
+                android:background="@drawable/beautiful_linearlayout_border">
 
                 <TextView
                     android:id="@+id/tv_fl"
-                    android:layout_marginLeft="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignTop="@+id/btnAddFuLiao"
+                    android:layout_marginLeft="8dp"
                     android:text="款式辅料"
                     android:textSize="20dp" />
 
@@ -280,12 +282,12 @@
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:id="@+id/recyclerview_img_fl_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/rl_title_fltp">
+                android:layout_below="@+id/rl_title_fltp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
             </android.support.v7.widget.RecyclerView>
         </RelativeLayout>
