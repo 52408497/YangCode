@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="5dp">
+
+    <!--android:background="#22000000"-->
+    <LinearLayout
+        android:id="@+id/id_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/iv_fl_tupian"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:src="@drawable/default_no_img" />
+
+        <TextView
+            android:id="@+id/tv_fl_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="辅料名称"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tv_fl_jiage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="辅料价格"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="#000000" />
+        <TextView
+            android:id="@+id/tv_fl_gongyinshang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="供应商"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+
+</RelativeLayout>

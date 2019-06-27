@@ -37,8 +37,11 @@ import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.Tools.ApplictionWidthAndHeight;
 import com.example.administrator.jianshang.Tools.CommonPopupWindow;
 import com.example.administrator.jianshang.Tools.PhotoUtils;
+import com.example.administrator.jianshang.adapters.FuLiaoAddRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.KuanShiImageListRecyclerViewAdapter;
+import com.example.administrator.jianshang.adapters.RecycleViewDivider;
 import com.example.administrator.jianshang.bean.FileBean;
+import com.example.administrator.jianshang.bean.FuLiaoInfoBean;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -56,6 +59,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private String timeData;
 
+
     private static final int CODE_GALLERY_REQUEST = 0xa0;
     private static final int CODE_CAMERA_REQUEST = 0xa1;
     private static final int PERMISSION_CAMERA_SDCARD = 0xa2;
@@ -64,12 +68,16 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private static final int CODE_CAMERA_FL_REQUEST = 0xa5;
 
 
-
     private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
     private RecyclerView imgKsListRecyclerview;
+    private FuLiaoAddRecyclerViewAdapter fuLiaoAddRecyclerViewAdapter;
+    private RecyclerView fuliaoListRecyclerview;
+
     private View oldView = null;
     private TextView oldTvFmView = null;
     private ImageView ivCB;
+
+
 
     CommonPopupWindow popupWindow;
 
@@ -83,6 +91,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private Button btnQx;               //取消按钮
 //    //----------------------------------
 
+    private FuLiaoInfoBean fuLiaoInfoBean;
     private String sfengmian = "";
 
     private String[] permissions;
@@ -105,6 +114,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     private ArrayList<FileBean> fileBeanListForKS;       //所有款式图片集合
     private ArrayList<FileBean> fileBeanListForKSToXC;   //相册款式图片集合
+private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集合
+
 
     private String fileNameForCB;               //成本图片名
     private String fileNameForFL;               //辅料图片名
@@ -118,12 +129,15 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         folderName = this.getString(R.string.my_photo_folder_name);
         creatFolder(folderName);
 
-
+        fuLiaoInfoBeans = new ArrayList<FuLiaoInfoBean>();
         fileBeanListForKS = new ArrayList<FileBean>();
         fileBeanListForKSToXC = new ArrayList<FileBean>();
 
+        fuliaoListRecyclerview = findViewById(R.id.recyclerview_img_fl_list);
         imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
         ivCB = findViewById(R.id.iv_cb);
+
+
 
         //为recyclerview注册上下文菜单
         registerForContextMenu(imgKsListRecyclerview);
@@ -442,7 +456,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     break;
 
                 case CODE_CAMERA_FL_REQUEST:    //辅料图片拍照回调
-                    showImages(fileUriFLForContent,ivTuPian);
+                    showImages(fileUriFLForContent, ivTuPian);
                     break;
             }
         }
@@ -500,6 +514,23 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
 
     }
+
+
+    private void useRecyclerViewToShowFuliaoList() {
+        //设置RecyclerView的适配器
+        fuLiaoAddRecyclerViewAdapter = new FuLiaoAddRecyclerViewAdapter(NewDaHuoClothesActivity.this, fuLiaoInfoBeans, 0);
+        fuliaoListRecyclerview.setAdapter(fuLiaoAddRecyclerViewAdapter);
+        //LayoutManager
+        //new LinearLayoutManager 参数 1、上下文 2、方向 3、是否倒序
+        fuliaoListRecyclerview.setLayoutManager(new LinearLayoutManager(NewDaHuoClothesActivity.this, LinearLayoutManager.VERTICAL, false));
+        //倒序后设置选显示倒序第一行
+        fuliaoListRecyclerview.scrollToPosition(fuLiaoInfoBeans.size() - 1);
+        //添加默认分割线：高度为2px，颜色为灰色
+        fuliaoListRecyclerview.addItemDecoration(new RecycleViewDivider(NewDaHuoClothesActivity.this, LinearLayoutManager.VERTICAL));
+
+
+    }
+
 
 
     private void useRecyclerViewToShow() {
@@ -619,14 +650,10 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         // popupWindow.showAsDropDown(view);
 
 
-                initPopupWindow(view);
-
-
+        initPopupWindow(view);
 
 
         //initPopupWindow(view);
-
-
 
 
     }
@@ -664,16 +691,15 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
 
                         String[] gys = {
-                            "贵宜典","姚明织带","画龙点睛","三鼎织带"
-                        }  ;
-
+                                "贵宜典", "姚明织带", "画龙点睛", "三鼎织带"
+                        };
 
 
                         spGongyinshang.setAdapter(
                                 new ArrayAdapter<String>(
-                                      view.getContext()  ,
-                                android.R.layout.simple_dropdown_item_1line,
-                                android.R.id.text1,gys)
+                                        view.getContext(),
+                                        android.R.layout.simple_dropdown_item_1line,
+                                        android.R.id.text1, gys)
                         );
 
                         //辅料拍照
@@ -715,9 +741,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                                                 CODE_CAMERA_FL_REQUEST);
 
 
-
-
-                                    }else {
+                                    } else {
                                         //ToastUtils.showShort(this, "设备没有SD卡！");
                                         Toast.makeText(
                                                 v.getContext(),
@@ -727,13 +751,9 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                                     }
 
 
-
-
-
-
-                                }else {
+                                } else {
                                     //权限还未申请，申请权限
-                                    EasyPermissions.requestPermissions((Activity) v.getContext(),"需要使用到相机和读写SD卡的权限",PERMISSION_CAMERA_SDCARD,
+                                    EasyPermissions.requestPermissions((Activity) v.getContext(), "需要使用到相机和读写SD卡的权限", PERMISSION_CAMERA_SDCARD,
                                             permissions);
 
                                 }
@@ -742,39 +762,19 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                         btnOk.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(NewDaHuoClothesActivity.this,"你点击了确定",Toast.LENGTH_SHORT).show();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                fuLiaoInfoBean = new FuLiaoInfoBean();
+                                fuLiaoInfoBean.setFuliao_name(etName.getText().toString().trim());
+                                fuLiaoInfoBean.setJiage(etJiage.getText().toString().trim().equals("") ? 0 : Integer.parseInt(etJiage.getText().toString().trim()));
+                                fuLiaoInfoBean.setFuliao_img_name(fileNameForFL);
+                                fuLiaoInfoBean.setGongyingshang(spGongyinshang.getSelectedItem().toString());
+                                fuLiaoInfoBeans.add(fuLiaoInfoBean);
+                                fuLiaoInfoBean = null;
+                                fileNameForFL = "";
+                                useRecyclerViewToShowFuliaoList();
 
                                 popupWindow.dismiss();
 
@@ -784,7 +784,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         btnQx.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(NewDaHuoClothesActivity.this,"你点击了取消",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(NewDaHuoClothesActivity.this, "你点击了取消", Toast.LENGTH_SHORT).show();
 
                                 popupWindow.dismiss();
                             }
@@ -799,8 +799,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                 .create();
 
         //popupWindow.showAsDropDown(view);
-
-
 
 
         popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0);
