@@ -75,7 +75,7 @@ public class FuLiaoAddRecyclerViewAdapter extends RecyclerView.Adapter<FuLiaoAdd
         //赋值数据
         holder.tv_fl_name.setText(data.getFuliao_name());
         holder.tv_fl_gongyinshang.setText(data.getGongyingshang());
-        holder.tv_fl_jiage.setText(data.getJiage()+"");
+        holder.tv_fl_jiage.setText(data.getJiage()+"元");
 
         String imageFileName = data.getFuliao_img_name();
         String folderName = this.context.getString(R.string.my_photo_folder_name);
@@ -105,6 +105,15 @@ public class FuLiaoAddRecyclerViewAdapter extends RecyclerView.Adapter<FuLiaoAdd
         return datas.size();
     }
 
+    /**
+     * 根据新的列表刷新数据
+     * @param datas
+     */
+    public void updateData(ArrayList<FuLiaoInfoBean> datas){
+        this.datas = datas;
+        //刷新适配器
+        notifyDataSetChanged();
+    }
 
     /**
      * 添加数据
@@ -146,14 +155,14 @@ public class FuLiaoAddRecyclerViewAdapter extends RecyclerView.Adapter<FuLiaoAdd
             tv_fl_gongyinshang = itemView.findViewById(R.id.tv_fl_gongyinshang);
 
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (onItemClickListener != null){
-//                        onItemClickListener.onItemClick(view,datas.get(getLayoutPosition()));
-//                    }
-//                }
-//            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onItemClickListener != null){
+                        onItemClickListener.onItemClick(view,datas.get(getLayoutPosition()),getLayoutPosition());
+                    }
+                }
+            });
 
 
 
@@ -189,7 +198,7 @@ public class FuLiaoAddRecyclerViewAdapter extends RecyclerView.Adapter<FuLiaoAdd
      * 点击RecyclerView某条的监听接口
      */
     public interface OnItemClickListener {
-        public void onItemClick(View view, FuLiaoInfoBean data);
+        public void onItemClick(View view, FuLiaoInfoBean data,int position);
     }
 
     /**

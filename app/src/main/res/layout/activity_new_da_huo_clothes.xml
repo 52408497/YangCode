@@ -284,7 +284,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_img_fl_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/rl_title_fltp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp">

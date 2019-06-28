@@ -57,7 +57,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
-    private String timeData;
+    private String timeData;    //年份信息
 
 
     private static final int CODE_GALLERY_REQUEST = 0xa0;
@@ -76,7 +76,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private View oldView = null;
     private TextView oldTvFmView = null;
     private ImageView ivCB;
-
 
 
     CommonPopupWindow popupWindow;
@@ -114,7 +113,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     private ArrayList<FileBean> fileBeanListForKS;       //所有款式图片集合
     private ArrayList<FileBean> fileBeanListForKSToXC;   //相册款式图片集合
-private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集合
+    private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集合
 
 
     private String fileNameForCB;               //成本图片名
@@ -138,16 +137,20 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
         ivCB = findViewById(R.id.iv_cb);
 
 
-
         //为recyclerview注册上下文菜单
         registerForContextMenu(imgKsListRecyclerview);
 
         //使用RecyclerView显示数据
         useRecyclerViewToShow();
 
+        //使用RecyclerView显示辅料信息数据
+        useRecyclerViewToShowFuliaoList();
+
         //添加每项点击事件监听
         setOnItemClickForCSListener();
 
+        //为辅料RecyclerView添加点击事件
+        setOnItemClickForFLListener();
         Intent intent = getIntent();
         timeData = intent.getStringExtra("yearInfo");
 
@@ -155,7 +158,25 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
         //initPop();
     }
 
+    /**
+     * 辅料RecyclerView点击事件监听
+     */
+    private void setOnItemClickForFLListener() {
+        fuLiaoAddRecyclerViewAdapter.setOnItemClickListener(new FuLiaoAddRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, FuLiaoInfoBean data, int position) {
+                //点击后打开悬浮窗口重新赋值
+                initPopupWindowHaveBean(view,data,position);
+            }
+        });
 
+    }
+
+    /**
+     * 创建存放图片的文件夹
+     *
+     * @param folderName
+     */
     private void creatFolder(String folderName) {
         if (hasSdcard()) {
 
@@ -372,7 +393,6 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
 
     }
 
-
     /**
      * 动态申请权限的回调方法
      *
@@ -389,6 +409,13 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
 
     }
 
+    /**
+     * 拍照及访问相册的回调方法
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -462,7 +489,12 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
         }
     }
 
-
+    /**
+     * 将图片显示在ImageView控件中
+     *
+     * @param uri
+     * @param view
+     */
     private void showImages(Uri uri, ImageView view) {
 
         Glide.with(NewDaHuoClothesActivity.this).load(uri).into(view);
@@ -487,7 +519,6 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         //如果checkPerm方法，没有注解AfterPermissionGranted，也可以在这里调用该方法。
     }
-
 
     /**
      * 请求权限被拒绝
@@ -515,7 +546,9 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
 
     }
 
-
+    /**
+     * 将辅料信息用RecyclerView显示出来
+     */
     private void useRecyclerViewToShowFuliaoList() {
         //设置RecyclerView的适配器
         fuLiaoAddRecyclerViewAdapter = new FuLiaoAddRecyclerViewAdapter(NewDaHuoClothesActivity.this, fuLiaoInfoBeans, 0);
@@ -531,8 +564,9 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
 
     }
 
-
-
+    /**
+     * 将款式图片用RecyclerView显示出来
+     */
     private void useRecyclerViewToShow() {
         //设置RecyclerView的适配器
         kuanShiImageListRecyclerViewAdapter = new KuanShiImageListRecyclerViewAdapter(NewDaHuoClothesActivity.this, fileBeanListForKS, 1);
@@ -547,7 +581,6 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
 
 
     }
-
 
     /**
      * 查询文件名是否已存在与列表，若不存在则添加进列表
@@ -569,7 +602,6 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
         return list;
     }
 
-
     /**
      * 查询文件名是否已存在与列表，若不存在则添加进列表
      *
@@ -590,7 +622,6 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
         return fileBeanList;
     }
 
-
     /**
      * 保留文件名及后缀
      */
@@ -602,7 +633,6 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
             return null;
         }
     }
-
 
     /**
      * 确定保存按钮
@@ -643,32 +673,35 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
         }
     }
 
-
+    /**
+     * 用PopupWindow的方式弹出添加辅料的页面
+     *
+     * @param view
+     */
     public void addFuLiao(View view) {
 //弹出PopupWindow
 
         // popupWindow.showAsDropDown(view);
-
-
         initPopupWindow(view);
-
-
         //initPopupWindow(view);
-
-
     }
 
+    private void initPopupWindow(View view) {
+        initPopupWindowHaveBean(view, null, 0);
+    }
 
-    public void initPopupWindow(View view) {
-
+    /**
+     * 初始化添加辅料信息的悬浮窗
+     *
+     * @param view
+     */
+    public void initPopupWindowHaveBean(View view, final FuLiaoInfoBean fuLiaoBean, final int youbiao) {
         ApplictionWidthAndHeight widthAndHeight = new ApplictionWidthAndHeight(NewDaHuoClothesActivity.this);
-
-
         popupWindow = new CommonPopupWindow.Builder(NewDaHuoClothesActivity.this)
                 //设置PopupWindow布局
                 .setView(R.layout.activity_add_fu_liao)
                 //设置宽高
-                .setWidthAndHeight(widthAndHeight.getWidth(), widthAndHeight.getHeight() / 10 * 9)
+                .setWidthAndHeight(widthAndHeight.getWidth(), widthAndHeight.getHeight())
                 // .setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT,
                 //         ViewGroup.LayoutParams.WRAP_CONTENT)
                 //设置动画
@@ -679,8 +712,7 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
                 .setViewOnclickListener(new CommonPopupWindow.ViewInterface() {
                     @Override
                     public void getChildView(final View view, int layoutResId) {
-
-
+                        //获取悬浮窗中的控件
                         etName = (EditText) view.findViewById(R.id.et_name);           //辅料名称
                         etJiage = (EditText) view.findViewById(R.id.et_jiage);           //价格
                         spGongyinshang = (Spinner) view.findViewById(R.id.sp_gongyinshang); //供应商
@@ -688,12 +720,15 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
                         ivTuPian = (ImageView) view.findViewById(R.id.iv_tp);         //辅料图片
                         btnOk = (Button) view.findViewById(R.id.btn_ok);               //确定按钮
                         btnQx = (Button) view.findViewById(R.id.btn_qx);               //取消按钮
+                        btnOk.setText("确定");
 
 
+
+
+                        //下拉列表中的值，这里暂时固定写死，以后将改为从数据库中动态获取
                         String[] gys = {
                                 "贵宜典", "姚明织带", "画龙点睛", "三鼎织带"
                         };
-
 
                         spGongyinshang.setAdapter(
                                 new ArrayAdapter<String>(
@@ -702,12 +737,29 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
                                         android.R.id.text1, gys)
                         );
 
+
+                        //如果fuLiaoBean有值则初始化控件数据
+                        if (fuLiaoBean != null) {
+                            etName.setText(fuLiaoBean.getFuliao_name());    // 设置辅料名称
+                            etJiage.setText(fuLiaoBean.getJiage() + "");    //设置辅料价格
+
+                            int n = spGongyinshang.getAdapter().getCount();
+                            for (int i = 0; i < n; i++) {
+                                if (spGongyinshang.getAdapter().getItem(i).toString().equals(fuLiaoBean.getGongyingshang())) {
+                                    spGongyinshang.setSelection(i);         //设置供应商下拉列表选中项
+                                    break;
+                                }
+                            }
+                            fileNameForFL = fuLiaoBean.getFuliao_img_name();    //设置辅料图片
+                            showImages(getUriForFileName(fileNameForFL),ivTuPian);  //显示辅料图片
+                            btnOk.setText("修改");
+                        }
+
+
                         //辅料拍照
                         ibPaiZhao.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
-
                                 permissions = new String[]{
                                         Manifest.permission.CAMERA,                 //使用相机的权限
                                         Manifest.permission.WRITE_EXTERNAL_STORAGE, //写入SD卡的权限
@@ -757,26 +809,55 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
                                             permissions);
 
                                 }
-
                             }
                         });
 
 
+                        //确定按钮被点击
                         btnOk.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                String fuliao_name = etName.getText().toString().trim();
+                                int jiage = etJiage.getText().toString().trim().equals("") ? 0 : Integer.parseInt(etJiage.getText().toString().trim());
+                                String gongyinshang = spGongyinshang.getSelectedItem().toString();
 
-                                fuLiaoInfoBean = new FuLiaoInfoBean();
-                                fuLiaoInfoBean.setFuliao_name(etName.getText().toString().trim());
-                                fuLiaoInfoBean.setJiage(etJiage.getText().toString().trim().equals("") ? 0 : Integer.parseInt(etJiage.getText().toString().trim()));
-                                fuLiaoInfoBean.setFuliao_img_name(fileNameForFL);
-                                fuLiaoInfoBean.setGongyingshang(spGongyinshang.getSelectedItem().toString());
-                                fuLiaoInfoBeans.add(fuLiaoInfoBean);
-                                fuLiaoInfoBean = null;
-                                fileNameForFL = "";
-                                useRecyclerViewToShowFuliaoList();
+                                //判断数据是否为空
+                                if (fuliao_name.equals("") || fuliao_name == null) {
+                                    Toast.makeText(
+                                            view.getContext(),
+                                            "请填写辅料名称！",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
 
-                                popupWindow.dismiss();
+                                } else {
+
+                                    fuLiaoInfoBean = new FuLiaoInfoBean();
+                                    fuLiaoInfoBean.setFuliao_name(fuliao_name);
+                                    fuLiaoInfoBean.setJiage(jiage);
+                                    fuLiaoInfoBean.setFuliao_img_name(fileNameForFL);
+                                    fuLiaoInfoBean.setGongyingshang(gongyinshang);
+
+                                    if (fuLiaoBean == null) {
+                                        //添加辅料信息
+                                        //将页面中的辅料信息用Bean对象的方式保存并添加至Beans列表中
+                                        fuLiaoInfoBeans.add(fuLiaoInfoBean);
+                                    } else {
+                                        //修改辅料信息
+                                        fuLiaoInfoBeans.set(youbiao,fuLiaoInfoBean);
+                                    }
+
+                                    fuLiaoInfoBean = null;
+                                    fileNameForFL = "";
+                                    //设置辅料信息的RecyclerView的高
+                                    fuliaoListRecyclerview.getLayoutParams().height = 400;
+                                    //刷新RecyclerView中的辅料信息数据
+                                    fuLiaoAddRecyclerViewAdapter.updateData(fuLiaoInfoBeans);
+                                    //倒序后设置选显示倒序第一行
+                                    fuliaoListRecyclerview.scrollToPosition(fuLiaoInfoBeans.size() - 1);
+                                    //关闭PopupWindow悬浮窗
+                                    popupWindow.dismiss();
+                                }
+
 
                             }
                         });
@@ -784,8 +865,7 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
                         btnQx.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(NewDaHuoClothesActivity.this, "你点击了取消", Toast.LENGTH_SHORT).show();
-
+                                // Toast.makeText(NewDaHuoClothesActivity.this, "你点击了取消", Toast.LENGTH_SHORT).show();
                                 popupWindow.dismiss();
                             }
                         });
@@ -817,6 +897,19 @@ private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集�
 //
 //        public void showAtLocation(View parent, int gravity, int x, int y)
 
+    }
+
+    /**
+     * 根据文件名获取本app相册中的URI
+     * @param fileName
+     * @return
+     */
+    public Uri getUriForFileName(String fileName){
+        String folderName = this.getString(R.string.my_photo_folder_name);
+        File fileUri = new File(Environment.getExternalStorageDirectory().getPath() +
+                "/" + folderName + "/" + fileName);
+        Uri fileUriForContent = Uri.fromFile(fileUri);
+        return fileUriForContent;
     }
 
 
