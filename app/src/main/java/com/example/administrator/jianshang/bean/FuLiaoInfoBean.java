@@ -1,8 +1,22 @@
 package com.example.administrator.jianshang.bean;
 
 public class FuLiaoInfoBean {
-
     private String fuliao_name;
+    private String fuliao_img_name;
+    private int jiage;
+    private String gongyingshang;
+
+    public int getGongyinshangId() {
+        return gongyinshangId;
+    }
+
+    public void setGongyinshangId(int gongyinshangId) {
+        this.gongyinshangId = gongyinshangId;
+    }
+
+    private int gongyinshangId;
+
+
 
     public String getFuliao_name() {
         return fuliao_name;
@@ -36,9 +50,7 @@ public class FuLiaoInfoBean {
         this.gongyingshang = gongyingshang;
     }
 
-    private String fuliao_img_name;
-    private int jiage;
-    private String gongyingshang;
+
 
 
 }

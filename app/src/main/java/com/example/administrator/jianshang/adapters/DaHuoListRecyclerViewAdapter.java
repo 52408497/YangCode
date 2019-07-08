@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.jianshang.R;
-import com.example.administrator.jianshang.bean.DaHuoInfoBean;
+import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
 
     private int orientation;
     private final Context context;
-    private ArrayList<DaHuoInfoBean> datas;
+    private ArrayList<DBDaHuoInfoBean> datas;
 
     /**
      *
@@ -32,7 +32,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
      * @param datas
      * @param orientation 0:HORIZONTAL 1:VERTICAL
      */
-    public DaHuoListRecyclerViewAdapter(Context context, ArrayList<DaHuoInfoBean> datas, int orientation) {
+    public DaHuoListRecyclerViewAdapter(Context context, ArrayList<DBDaHuoInfoBean> datas, int orientation) {
         this.context = context;
         this.datas = datas;
         this.orientation = orientation;
@@ -65,7 +65,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
     @Override
     public void onBindViewHolder(MyViewHodler holder, int position) {
         //根据位置得到对应的数据
-        DaHuoInfoBean data = datas.get(position);
+        DBDaHuoInfoBean data = datas.get(position);
 
         //赋值数据
         holder.tv_title.setText(data.getKuanhao());
@@ -88,7 +88,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
      * @param position
      * @param data
      */
-    public void addData(int position, DaHuoInfoBean data) {
+    public void addData(int position, DBDaHuoInfoBean data) {
         datas.add(position,data);
 
         //刷新适配器 插入操作
@@ -162,7 +162,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
      * 点击RecyclerView某条的监听接口
      */
     public interface OnItemClickListener {
-        public void onItemClick(View view, DaHuoInfoBean data);
+        public void onItemClick(View view, DBDaHuoInfoBean data);
     }
 
     /**

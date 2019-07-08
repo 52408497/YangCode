@@ -75,7 +75,7 @@ public class FuLiaoAddRecyclerViewAdapter extends RecyclerView.Adapter<FuLiaoAdd
         //赋值数据
         holder.tv_fl_name.setText(data.getFuliao_name());
         holder.tv_fl_gongyinshang.setText(data.getGongyingshang());
-        holder.tv_fl_jiage.setText(data.getJiage()+"元");
+        holder.tv_fl_jiage.setText(data.getJiage()+"");
 
         String imageFileName = data.getFuliao_img_name();
         String folderName = this.context.getString(R.string.my_photo_folder_name);

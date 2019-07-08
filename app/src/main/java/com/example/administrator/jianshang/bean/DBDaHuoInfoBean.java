@@ -4,16 +4,24 @@ package com.example.administrator.jianshang.bean;
  * Created by Administrator on 2019/6/4.
  */
 
-public class DaHuoInfoBean {
+public class DBDaHuoInfoBean {
     private int id;
     private String kuanhao;             //款号
     private String kuanshimingcheng;    //款式名称
     private String yangbanhao;          //样板号
     private String yearInfo;            //年份信息
     private String fengmianImg;         //封面图片
-    private String tag;                 //标记（是否为爆款等）
+    private String chengbenImg;         //成本图片
+    private String tag;                 //标记（是否为爆款等） PT/BK/..
     private String beizhu;              //备注
 
+    public String getChengbenImg() {
+        return chengbenImg;
+    }
+
+    public void setChengbenImg(String chengbenImg) {
+        this.chengbenImg = chengbenImg;
+    }
 
     public int getId() {
         return id;

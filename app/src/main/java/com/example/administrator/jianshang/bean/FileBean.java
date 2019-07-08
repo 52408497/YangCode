@@ -8,6 +8,7 @@ import android.net.Uri;
 
 public class FileBean {
     private String fileName;
+    private Uri fileUri;
 
     public String getFileName() {
         return fileName;
@@ -24,8 +25,4 @@ public class FileBean {
     public void setFileUri(Uri fileUri) {
         this.fileUri = fileUri;
     }
-
-    private Uri fileUri;
-
-
 }

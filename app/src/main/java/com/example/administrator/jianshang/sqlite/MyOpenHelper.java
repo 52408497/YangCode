@@ -73,6 +73,7 @@ public class MyOpenHelper extends SQLiteOpenHelper {
                 "yangbanhao text," +
                 "year_info text," +
                 "fengmian_img text," +
+                "chengben_img text," +
                 "tag text," +
                 "beizhu text)");
 

@@ -68,6 +68,8 @@ public class TbYearsInfoDao {
                 null,
                 null,
                 null);
+//        db.close();
+//        myOpenHelper.close();
         return cursor;
     }
 
@@ -84,6 +86,8 @@ public class TbYearsInfoDao {
                 null,
                 null,
                 null);
+//        db.close();
+//        myOpenHelper.close();
         return cursor;
     }
 

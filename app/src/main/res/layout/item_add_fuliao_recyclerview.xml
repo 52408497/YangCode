@@ -19,35 +19,39 @@
             android:id="@+id/iv_fl_tupian"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_weight="1"
-            android:src="@drawable/default_no_img" />
+            android:src="@drawable/default_no_img"
+            />
 
         <TextView
             android:id="@+id/tv_fl_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="10dp"
             android:text="辅料名称"
-            android:layout_weight="1"
             android:textAllCaps="false"
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/tv_fl_jiage"
+        android:id="@+id/tv_fl_jiage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="辅料价格"
+        android:textAllCaps="false"
+        android:textColor="#000000" />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="辅料价格"
-            android:layout_weight="1"
+            android:layout_marginLeft="1dp"
+            android:text="元"
             android:textAllCaps="false"
             android:textColor="#000000" />
         <TextView
             android:id="@+id/tv_fl_gongyinshang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="10dp"
             android:text="供应商"
-            android:layout_weight="1"
             android:textAllCaps="false"
             android:textColor="#000000" />
     </LinearLayout>

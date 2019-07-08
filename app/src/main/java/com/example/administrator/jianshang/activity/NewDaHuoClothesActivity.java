@@ -2,33 +2,32 @@ package com.example.administrator.jianshang.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +35,21 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.Tools.ApplictionWidthAndHeight;
 import com.example.administrator.jianshang.Tools.CommonPopupWindow;
+import com.example.administrator.jianshang.Tools.FileUtils;
+import com.example.administrator.jianshang.Tools.ClothesTagType;
 import com.example.administrator.jianshang.Tools.PhotoUtils;
 import com.example.administrator.jianshang.adapters.FuLiaoAddRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.KuanShiImageListRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.RecycleViewDivider;
+import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
+import com.example.administrator.jianshang.bean.DBDahuoImgBean;
+import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
 import com.example.administrator.jianshang.bean.FileBean;
 import com.example.administrator.jianshang.bean.FuLiaoInfoBean;
+import com.example.administrator.jianshang.bean.GongYinShangBean;
+import com.example.administrator.jianshang.bean.HandlerMessageBean;
+import com.example.administrator.jianshang.bean.NewDaHuoClothesBean;
+import com.example.administrator.jianshang.sqlite.dao.NewClothesDao;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -66,21 +74,32 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private static final int PERMISSION_SDCARD = 0xa3;
     private static final int CODE_CAMERA_CB_REQUEST = 0xa4;
     private static final int CODE_CAMERA_FL_REQUEST = 0xa5;
+    private static final int COPE_FILE = 0x0001;
+    private static final int INSERT_DATABASE = 0x0002;
 
 
-    private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
-    private RecyclerView imgKsListRecyclerview;
-    private FuLiaoAddRecyclerViewAdapter fuLiaoAddRecyclerViewAdapter;
-    private RecyclerView fuliaoListRecyclerview;
+    private NewClothesDao newClothesDao;
 
     private View oldView = null;
     private TextView oldTvFmView = null;
-    private ImageView ivCB;
 
 
-    CommonPopupWindow popupWindow;
+    //--------主窗体控件----------
+    private EditText etKH;       //款号
+    private EditText etKSMC;    //款式名称
+    private EditText etYBH;     //样板号
+    private EditText etBZ;      //备注
+    private ImageView ivCB;     //成本图片
+
+    private RecyclerView imgKsListRecyclerview;     //款式图片Recyclerview
+    private RecyclerView fuliaoListRecyclerview;    //辅料列表Recyclerview
+
+    private KuanShiImageListRecyclerViewAdapter kuanShiImageListRecyclerViewAdapter;
+    private FuLiaoAddRecyclerViewAdapter fuLiaoAddRecyclerViewAdapter;
+    //---------------------------
 
     //    //-----悬浮窗控件------------------
+    CommonPopupWindow popupWindow;
     private EditText etName;            //辅料名称
     private EditText etJiage;           //价格
     private Spinner spGongyinshang;     //供应商
@@ -116,13 +135,126 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans;  //添加的辅料信息集合
 
 
-    private String fileNameForCB;               //成本图片名
-    private String fileNameForFL;               //辅料图片名
+    private String fileNameForCB = "";               //成本图片名
+    private String fileNameForFL = "";               //辅料图片名
+
+
+    private ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans;//辅料信息列表集合
+    private ArrayList<DBDahuoImgBean> dbDahuoImgBeans;  //大货图片列表集
+    private DBDaHuoInfoBean dbDaHuoInfoBean;            //数据库大货信息Bean
+    private NewDaHuoClothesBean newDaHuoClothesBean;    //新添加的款式信息Bean
+    private boolean copeFileIsOK = false;               //拷贝文件操作状态（用来判断progressDialog是否可关闭）
+    private boolean insertDataBaseIsOK = false;         //将数据保存到数据库的状态（用来判断progressDialog是否可关闭）
+    private ProgressDialog progressDialog;
+    private boolean addIsSuccess = false;               //保存数据是否成功
+
+    private Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            //处理消息
+            switch (msg.what) {
+                case COPE_FILE:
+                    copeFileIsOK = ((HandlerMessageBean) msg.obj).isCopeFileIsOK();
+
+                    if (copeFileIsOK && insertDataBaseIsOK) {
+                        progressDialog.dismiss();
+                        copeFileIsOK = false;
+                        insertDataBaseIsOK = false;
+
+                        if (addIsSuccess) {
+                            AlertDialog alertDialog1 = new AlertDialog.Builder(NewDaHuoClothesActivity.this)
+                                    .setTitle("提示")//标题
+                                    .setMessage("数据保存成功！")//内容
+                                    .setIcon(R.drawable.cg)//图标
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            NewDaHuoClothesActivity.this.finish();
+                                        }
+                                    })
+                                    .create();
+                            alertDialog1.setCanceledOnTouchOutside(false);//触摸对话框边缘外部，对话框不消失
+                            alertDialog1.show();
+                            //finish();
+                        } else {
+                            AlertDialog alertDialog1 = new AlertDialog.Builder(NewDaHuoClothesActivity.this)
+                                    .setTitle("提示")//标题
+                                    .setMessage("数据保存失败！")//内容
+                                    .setIcon(R.drawable.jg)//图标
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            NewDaHuoClothesActivity.this.finish();
+                                        }
+                                    })
+                                    .create();
+                            alertDialog1.setCanceledOnTouchOutside(false);//触摸对话框边缘外部，对话框不消失
+                            alertDialog1.show();
+                        }
+                    }
+
+                    ArrayList<String> copyErrorList = ((HandlerMessageBean) msg.obj).getCopyErrorList();
+                    if (copyErrorList.size() > 0) {
+                        String errorMessage = "拷贝相册文件的过程中出现错误，文件：";
+                        for (String fileName :
+                                copyErrorList) {
+                            errorMessage = errorMessage + fileName + " ";
+                        }
+                        errorMessage = errorMessage + "拷贝失败！原因有三：1、源文件不存在 2、源文件路径和目标文件路径重复 3、该路径下已经有一个同名文件，该失败有可能会影响图片的显示！";
+                        Toast.makeText(NewDaHuoClothesActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                case INSERT_DATABASE:
+                    insertDataBaseIsOK = ((HandlerMessageBean) msg.obj).isInsertDataBaseIsOK();
+                    addIsSuccess = ((HandlerMessageBean) msg.obj).isAddIsSuccess();
+                    if (copeFileIsOK && insertDataBaseIsOK) {
+                        progressDialog.dismiss();
+                        copeFileIsOK = false;
+                        insertDataBaseIsOK = false;
+
+                        if (addIsSuccess) {
+                            AlertDialog alertDialog1 = new AlertDialog.Builder(NewDaHuoClothesActivity.this)
+                                    .setTitle("提示")//标题
+                                    .setMessage("数据保存成功！")//内容
+                                    .setIcon(R.drawable.cg)//图标
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            NewDaHuoClothesActivity.this.finish();
+                                        }
+                                    })
+                                    .create();
+                            alertDialog1.setCanceledOnTouchOutside(false);//触摸对话框边缘外部，对话框不消失
+                            alertDialog1.show();
+                            //finish();
+                        } else {
+                            AlertDialog alertDialog1 = new AlertDialog.Builder(NewDaHuoClothesActivity.this)
+                                    .setTitle("提示")//标题
+                                    .setMessage("数据保存失败！")//内容
+                                    .setIcon(R.drawable.jg)//图标
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            NewDaHuoClothesActivity.this.finish();
+                                        }
+                                    })
+                                    .create();
+                            alertDialog1.setCanceledOnTouchOutside(false);//触摸对话框边缘外部，对话框不消失
+                            alertDialog1.show();
+                        }
+                    }
+                    break;
+            }
+
+
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_da_huo_clothes);
+
 
         //查看SD卡中是否存在JianShangPhoto文件夹，若不存在，则创建
         folderName = this.getString(R.string.my_photo_folder_name);
@@ -132,10 +264,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         fileBeanListForKS = new ArrayList<FileBean>();
         fileBeanListForKSToXC = new ArrayList<FileBean>();
 
-        fuliaoListRecyclerview = findViewById(R.id.recyclerview_img_fl_list);
-        imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
-        ivCB = findViewById(R.id.iv_cb);
-
+        //获取View控件对象
+        initView();
 
         //为recyclerview注册上下文菜单
         registerForContextMenu(imgKsListRecyclerview);
@@ -159,6 +289,19 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     }
 
     /**
+     * 获取View控件对象
+     */
+    private void initView() {
+        fuliaoListRecyclerview = findViewById(R.id.recyclerview_img_fl_list);
+        imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
+        ivCB = findViewById(R.id.iv_cb);
+        etKH = findViewById(R.id.et_kh);
+        etKSMC = findViewById(R.id.et_mc);
+        etYBH = findViewById(R.id.et_ybh);
+        etBZ = findViewById(R.id.et_bz);
+    }
+
+    /**
      * 辅料RecyclerView点击事件监听
      */
     private void setOnItemClickForFLListener() {
@@ -166,7 +309,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             @Override
             public void onItemClick(View view, FuLiaoInfoBean data, int position) {
                 //点击后打开悬浮窗口重新赋值
-                initPopupWindowHaveBean(view,data,position);
+                initPopupWindowHaveBean(view, data, position);
             }
         });
 
@@ -641,35 +784,149 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
      */
     public void submitOnClick(View view) {
 
+        String sKH = etKH.getText().toString().trim();
+        String sKSMC = etKSMC.getText().toString().trim();
+        String sYBH = etYBH.getText().toString().trim();
+        String sBZ = etBZ.getText().toString().trim();
 
-        //拷贝相册里的照片到本应用专用的图片文件夹中
+        if (sKH == null || sKH.equals("")) {
+            Toast.makeText(NewDaHuoClothesActivity.this, "请填写款号！", Toast.LENGTH_SHORT).show();
+        } else if (sKSMC == null || sKSMC.equals("")) {
+            Toast.makeText(NewDaHuoClothesActivity.this, "请填写款式名称！", Toast.LENGTH_SHORT).show();
+        } else if (sYBH == null || sYBH.equals("")) {
+            Toast.makeText(NewDaHuoClothesActivity.this, "请填写样板号！", Toast.LENGTH_SHORT).show();
+        } else {
+
+//从数据库中查询该款号是否存在，若不存在则可添加
+            NewClothesDao dao = new NewClothesDao(NewDaHuoClothesActivity.this);
+            boolean haveThisKH = dao.getInfoForYearAndKH(timeData, sKH);
+            if (!haveThisKH) {
+
+                progressDialog = new ProgressDialog(NewDaHuoClothesActivity.this);
+                progressDialog.setMessage("...请您稍等...");
+                progressDialog.setCanceledOnTouchOutside(false);//设置点击进度对话框外的区域对话框不消失
+                progressDialog.show();
+
+                //拷贝相册里的照片到本应用专用的图片文件夹中
+                if (fileBeanListForKSToXC != null) {
+                    newPath = Environment.getExternalStorageDirectory().getPath() + "/" + folderName + "/";
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            ArrayList<String> copyErrorList = new ArrayList<String>();
+                            for (FileBean bean :
+                                    fileBeanListForKSToXC) {
+                                String sPath = PhotoUtils.getPathNoPathHead(                           //  绝对路径的URI
+                                        NewDaHuoClothesActivity.this,
+                                        bean.getFileUri()
+                                );
+                                boolean isSuccess = FileUtils.copyFile(sPath, newPath);
+                                if (!isSuccess) {
+                                    copyErrorList.add(bean.getFileName());
+                                }
+                            }
+                            HandlerMessageBean messageBean = new HandlerMessageBean();
+                            messageBean.setCopeFileIsOK(true);
+                            messageBean.setCopyErrorList(copyErrorList);
+                            Message msg = new Message();
+                            msg.what = COPE_FILE;
+                            msg.obj = messageBean;
+                            handler.sendMessage(msg);
+
+                        }
+                    }.start();
+                } else {
+                    copeFileIsOK = true;
+                }
 
 
-        //保存数据到数据库
+                //保存数据到数据库
+                newDaHuoClothesBean = new NewDaHuoClothesBean();
+                dbDaHuoInfoBean = new DBDaHuoInfoBean();
+                dbDaHuoInfoBean.setYearInfo(timeData);
+                dbDaHuoInfoBean.setKuanhao(sKH);
+                dbDaHuoInfoBean.setKuanshimingcheng(sKSMC);
+                dbDaHuoInfoBean.setYangbanhao(sYBH);
+                dbDaHuoInfoBean.setBeizhu(sBZ);
+                dbDaHuoInfoBean.setFengmianImg(sfengmian);
+                dbDaHuoInfoBean.setTag(ClothesTagType.getTypePT());
+                dbDaHuoInfoBean.setChengbenImg(fileNameForCB);
+                newDaHuoClothesBean.setDbDaHuoInfoBean(dbDaHuoInfoBean);
+
+                fileNameForCB = "";
+                dbDahuoImgBeans = new ArrayList<DBDahuoImgBean>();
+                dbFuliaoInfoBeans = new ArrayList<DBFuliaoInfoBean>();
 
 
-        for (FileBean bean :
-                fileBeanListForKSToXC) {
-            Log.e("---照片名,从相册中选中的：---", bean.getFileName());             //  文件名
-//            Log.e("---照片名,从相册中选中的：---", bean.getFileUri().toString());   //  content形式的URI
-
-//            String sPath1 = PhotoUtils.getPath(                                     //  file:///形式的URI
-//                    NewDaHuoClothesActivity.this,
-//                    bean.getFileUri());
-//            Log.e("---照片名,从相册中选中的：---", sPath1);
-
-//            String sPath2 = PhotoUtils.getPathNoPathHead(                           //  绝对路径的URI
-//                    NewDaHuoClothesActivity.this,
-//                    bean.getFileUri());
+//        for (FileBean bean :
+//                fileBeanListForKSToXC) {
+//            Log.e("---照片名,从相册中选中的：---", bean.getFileName());             //  文件名
+////            Log.e("---照片名,从相册中选中的：---", bean.getFileUri().toString());   //  content形式的URI
 //
-//            Log.e("---照片名,从相册中选中的：---", sPath2);
-        }
-
-
-        for (FileBean bean :
-                fileBeanListForKS) {
-            Log.e("---照片名,所有显示的照片：---", bean.getFileName());
+////            String sPath1 = PhotoUtils.getPath(                                     //  file:///形式的URI
+////                    NewDaHuoClothesActivity.this,
+////                    bean.getFileUri());
+////            Log.e("---照片名,从相册中选中的：---", sPath1);
+//
+////            String sPath2 = PhotoUtils.getPathNoPathHead(                           //  绝对路径的URI
+////                    NewDaHuoClothesActivity.this,
+////                    bean.getFileUri());
+////
+////            Log.e("---照片名,从相册中选中的：---", sPath2);
+//        }
+                if (fileBeanListForKS.size() > 0) {
+                    for (FileBean bean :
+                            fileBeanListForKS) {
+                        DBDahuoImgBean dbDahuoImgBean = new DBDahuoImgBean();
+                        dbDahuoImgBean.setImgName(bean.getFileName());
+                        dbDahuoImgBean.setImgType("KS");
+                        dbDahuoImgBeans.add(dbDahuoImgBean);
+//            Log.e("---照片名,所有显示的照片：---", bean.getFileName());
 //            Log.e("---照片名,所有显示的照片：---", bean.getFileUri().toString());
+                    }
+                }
+                newDaHuoClothesBean.setDbDahuoImgBeans(dbDahuoImgBeans);
+
+                if (fuLiaoInfoBeans.size() > 0) {
+                    for (FuLiaoInfoBean bean :
+                            fuLiaoInfoBeans) {
+                        DBFuliaoInfoBean dbFuliaoInfoBean = new DBFuliaoInfoBean();
+                        dbFuliaoInfoBean.setFuliaoName(bean.getFuliao_name());
+                        dbFuliaoInfoBean.setFuliaoImg(bean.getFuliao_img_name());
+                        dbFuliaoInfoBean.setJiage(bean.getJiage() + "");
+                        dbFuliaoInfoBean.setGongyinshangId(bean.getGongyinshangId());
+                        dbFuliaoInfoBean.setBeizhu("");
+                        dbFuliaoInfoBeans.add(dbFuliaoInfoBean);
+                    }
+                }
+
+                newDaHuoClothesBean.setDbFuliaoInfoBeans(dbFuliaoInfoBeans);
+
+
+                //将数据添加到数据库中
+                new Thread() {
+                    @Override
+                    public void run() {
+                        HandlerMessageBean messageBean = new HandlerMessageBean();
+                        newClothesDao = new NewClothesDao(NewDaHuoClothesActivity.this);
+                        boolean b = newClothesDao.addNewClothes(newDaHuoClothesBean);
+                        messageBean.setAddIsSuccess(b);
+                        messageBean.setInsertDataBaseIsOK(true);
+                        Message msg = new Message();
+                        msg.what = INSERT_DATABASE;
+                        msg.obj = messageBean;
+                        handler.sendMessage(msg);
+
+                    }
+                }.start();
+
+            } else {
+                etKH.setFocusable(true);
+                etKH.setFocusableInTouchMode(true);
+                etKH.requestFocus();
+                etKH.requestFocusFromTouch();
+                Toast.makeText(NewDaHuoClothesActivity.this, "该款式已存在，请重新填写款号！", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -723,19 +980,37 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         btnOk.setText("确定");
 
 
-
-
                         //下拉列表中的值，这里暂时固定写死，以后将改为从数据库中动态获取
+                        List<GongYinShangBean> gongyinshangInfoBeans = new ArrayList<GongYinShangBean>();
                         String[] gys = {
                                 "贵宜典", "姚明织带", "画龙点睛", "三鼎织带"
                         };
 
-                        spGongyinshang.setAdapter(
-                                new ArrayAdapter<String>(
-                                        view.getContext(),
-                                        android.R.layout.simple_dropdown_item_1line,
-                                        android.R.id.text1, gys)
+                        for (int i = 0; i < 4; i++) {
+                            GongYinShangBean gongYinShangBean = new GongYinShangBean();
+                            gongYinShangBean.setId(i + 1);
+                            gongYinShangBean.setName(gys[i]);
+                            gongyinshangInfoBeans.add(gongYinShangBean);
+                        }
+
+//                        ArrayAdapter<GongYinShangBean> adapter = new ArrayAdapter<GongYinShangBean>( view.getContext(),
+//                                android.R.layout.simple_spinner_item, gongyinshangInfoBeans);
+
+                        ArrayAdapter<GongYinShangBean> adapter = new ArrayAdapter<GongYinShangBean>(
+                                view.getContext(),
+                                android.R.layout.simple_dropdown_item_1line,
+                                android.R.id.text1,
+                                gongyinshangInfoBeans
                         );
+
+                        spGongyinshang.setAdapter(adapter);
+
+//                        spGongyinshang.setAdapter(
+//                                new ArrayAdapter<String>(
+//                                        view.getContext(),
+//                                        android.R.layout.simple_dropdown_item_1line,
+//                                        android.R.id.text1, gys)
+//                        );
 
 
                         //如果fuLiaoBean有值则初始化控件数据
@@ -745,13 +1020,19 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
                             int n = spGongyinshang.getAdapter().getCount();
                             for (int i = 0; i < n; i++) {
-                                if (spGongyinshang.getAdapter().getItem(i).toString().equals(fuLiaoBean.getGongyingshang())) {
+                                if (((GongYinShangBean) spGongyinshang.getAdapter().getItem(i)).getName().equals(fuLiaoBean.getGongyingshang())) {
                                     spGongyinshang.setSelection(i);         //设置供应商下拉列表选中项
                                     break;
                                 }
+
+
+//                                if (spGongyinshang.getAdapter().getItem(i).toString().equals(fuLiaoBean.getGongyingshang())) {
+//                                    spGongyinshang.setSelection(i);         //设置供应商下拉列表选中项
+//                                    break;
+//                                }
                             }
                             fileNameForFL = fuLiaoBean.getFuliao_img_name();    //设置辅料图片
-                            showImages(getUriForFileName(fileNameForFL),ivTuPian);  //显示辅料图片
+                            showImages(getUriForFileName(fileNameForFL), ivTuPian);  //显示辅料图片
                             btnOk.setText("修改");
                         }
 
@@ -819,8 +1100,9 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                             public void onClick(View v) {
                                 String fuliao_name = etName.getText().toString().trim();
                                 int jiage = etJiage.getText().toString().trim().equals("") ? 0 : Integer.parseInt(etJiage.getText().toString().trim());
-                                String gongyinshang = spGongyinshang.getSelectedItem().toString();
-
+//                                String gongyinshang = spGongyinshang.getSelectedItem().toString();
+                                Integer gongyinshangId = ((GongYinShangBean) spGongyinshang.getSelectedItem()).getId();
+                                String gongyinshang = ((GongYinShangBean) spGongyinshang.getSelectedItem()).getName();
                                 //判断数据是否为空
                                 if (fuliao_name.equals("") || fuliao_name == null) {
                                     Toast.makeText(
@@ -836,6 +1118,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                                     fuLiaoInfoBean.setJiage(jiage);
                                     fuLiaoInfoBean.setFuliao_img_name(fileNameForFL);
                                     fuLiaoInfoBean.setGongyingshang(gongyinshang);
+                                    fuLiaoInfoBean.setGongyinshangId(gongyinshangId);
 
                                     if (fuLiaoBean == null) {
                                         //添加辅料信息
@@ -843,7 +1126,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                                         fuLiaoInfoBeans.add(fuLiaoInfoBean);
                                     } else {
                                         //修改辅料信息
-                                        fuLiaoInfoBeans.set(youbiao,fuLiaoInfoBean);
+                                        fuLiaoInfoBeans.set(youbiao, fuLiaoInfoBean);
                                     }
 
                                     fuLiaoInfoBean = null;
@@ -901,10 +1184,11 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     /**
      * 根据文件名获取本app相册中的URI
+     *
      * @param fileName
      * @return
      */
-    public Uri getUriForFileName(String fileName){
+    public Uri getUriForFileName(String fileName) {
         String folderName = this.getString(R.string.my_photo_folder_name);
         File fileUri = new File(Environment.getExternalStorageDirectory().getPath() +
                 "/" + folderName + "/" + fileName);
