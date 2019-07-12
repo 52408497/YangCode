@@ -1,6 +1,8 @@
 package com.example.administrator.jianshang.adapters;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -47,7 +51,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
      */
     @Override
     public MyViewHodler onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = View.inflate(context, R.layout.item_img_test_recyclerview, null);
+        View itemView = View.inflate(context, R.layout.item_dahuo_list_recyclerview, null);
         LinearLayout linearLayout = itemView.findViewById(R.id.id_linear_layout);
         linearLayout.setOrientation(orientation);
 
@@ -70,7 +74,26 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
         //赋值数据
         holder.tv_title.setText(data.getKuanhao());
 
+        String imageFileName = data.getFengmianImg();
+        String folderName = this.context.getString(R.string.my_photo_folder_name);
+        File fileUri = new File(Environment.getExternalStorageDirectory().getPath() +
+                "/" + folderName + "/" + imageFileName);
+        Uri fileUriForContent = Uri.fromFile(fileUri);
+
+        Glide.with(context)
+                .load(fileUriForContent)
+                .placeholder(R.drawable.default_no_img)     //占位图
+                .error(R.drawable.default_no_img)           //出错的占位图
+//                .override(width, height)                    //图片显示的分辨率，像素值，可转化为dp再设
+//              .animate(R.anim.glide_anim)                 //动画
+//                .centerCrop()                               //图片显示样式
+//                .fitCenter()                                //图片显示样式
+                .into(holder.iv_icon);
+
+
+
     }
+
 
     /**
      * 得到总条数

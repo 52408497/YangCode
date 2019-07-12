@@ -9,6 +9,8 @@ import android.util.Log;
 import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
 import com.example.administrator.jianshang.sqlite.MyOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2019/6/2.
  */
@@ -41,7 +43,7 @@ public class TbDahuoInfoDao {
                 null,
                 null);
 
-        if (cursor!=null && cursor.getCount() > 0) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.close();
             db.close();
             myOpenHelper.close();
@@ -94,5 +96,46 @@ public class TbDahuoInfoDao {
             cursor.close();
         }
         return _id_dahuo;
+    }
+
+    /**
+     * 根据年份信息查询大货信息列表
+     *
+     * @param year_info
+     * @return
+     */
+    public ArrayList<DBDaHuoInfoBean> getDBDaHuoInfoBeansForYears(String year_info) {
+        ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans = new ArrayList<DBDaHuoInfoBean>();
+
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_dahuo_info",
+                null,
+                "year_info = ?",
+                new String[]{year_info},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                //datas.add(cursor.getString(cursor.getColumnIndex("year_info")));
+                DBDaHuoInfoBean dbDaHuoInfoBean = new DBDaHuoInfoBean();
+                dbDaHuoInfoBean.setId(cursor.getInt(cursor.getColumnIndex("_id_dahuo")));
+                dbDaHuoInfoBean.setChengbenImg(cursor.getString(cursor.getColumnIndex("chengben_img")));
+                dbDaHuoInfoBean.setFengmianImg(cursor.getString(cursor.getColumnIndex("fengmian_img")));
+                dbDaHuoInfoBean.setTag(cursor.getString(cursor.getColumnIndex("tag")));
+                dbDaHuoInfoBean.setBeizhu(cursor.getString(cursor.getColumnIndex("beizhu")));
+                dbDaHuoInfoBean.setYangbanhao(cursor.getString(cursor.getColumnIndex("yangbanhao")));
+                dbDaHuoInfoBean.setKuanshimingcheng(cursor.getString(cursor.getColumnIndex("kuanshimingcheng")));
+                dbDaHuoInfoBean.setKuanhao(cursor.getString(cursor.getColumnIndex("kuanhao")));
+                dbDaHuoInfoBean.setYearInfo(cursor.getString(cursor.getColumnIndex("year_info")));
+
+                dbDaHuoInfoBeans.add(dbDaHuoInfoBean);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return dbDaHuoInfoBeans;
     }
 }
