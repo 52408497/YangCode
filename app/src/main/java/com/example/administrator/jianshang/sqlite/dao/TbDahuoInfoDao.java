@@ -138,4 +138,18 @@ public class TbDahuoInfoDao {
         db.close();
         return dbDaHuoInfoBeans;
     }
+
+
+    public boolean removeDahuoInfoForDahuoId(int id, SQLiteDatabase db) {
+        int n = 0;
+        n = db.delete("tb_dahuo_info",
+                "_id_dahuo = ?",
+                new String[]{String.valueOf(id)});
+        if (n > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }

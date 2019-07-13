@@ -75,27 +75,21 @@ public class DahuoFragment extends BaseFragment {
         //创建弹出窗口
         createDialog();
 
-        //查询数据库,添加数据
-        datas = new ArrayList<String>();
-
         yearsInfoDao = new TbYearsInfoDao(mContext);
-        cursor = yearsInfoDao.getAllYearsInfo();
-        if (cursor.moveToFirst()) {
-            do {
-                datas.add(cursor.getString(cursor.getColumnIndex("year_info")));
-            } while (cursor.moveToNext());
+        //查询数据库,添加数据
+
+        datas = yearsInfoDao.getAllYearsInfo();
+
+        if (datas.size()>0) {
+            //使用RecyclerView显示数据
+            useRecyclerViewToShow();
+
+            //添加按钮的点击事件监听
+            setOnClickListener();
+
+            //添加每项点击事件监听
+            setOnItemClickListener();
         }
-        cursor.close();
-
-        //使用RecyclerView显示数据
-        useRecyclerViewToShow();
-
-        //添加按钮的点击事件监听
-        setOnClickListener();
-
-        //添加每项点击事件监听
-        setOnItemClickListener();
-
 
     }
 
@@ -146,16 +140,10 @@ public class DahuoFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, String data) {
                 //Toast.makeText(mContext, "item==" + data, Toast.LENGTH_SHORT).show();
-
-
-
                 Intent intent = new Intent();
                 intent.setClass(mContext, DaHuoListActivity.class);
                 intent.putExtra("yearInfo", data);
                 startActivity(intent);
-
-
-
 
             }
         });

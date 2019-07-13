@@ -42,4 +42,38 @@ public class TbDahuoImgDao {
             return false;
         }
     }
+
+    public boolean removeDahuoImgForDahuoId(int id, SQLiteDatabase db) {
+        int n = 0;
+        n = db.delete("tb_dahuo_img",
+                "id_dahuo = ?",
+                new String[]{String.valueOf(id)});
+        if (n > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isHaveImgWithDahuoId(int id) {
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_dahuo_img",
+                null,
+                "id_dahuo=?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.close();
+            db.close();
+            myOpenHelper.close();
+            return true;
+        } else {
+            db.close();
+            myOpenHelper.close();
+            return false;
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.example.administrator.jianshang.sqlite.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
@@ -42,5 +43,40 @@ public class TbFuliaoInfoDao {
         }
 
 
+    }
+
+    public boolean removeFuliaoInfoForDahuoId(int id, SQLiteDatabase db) {
+
+        int n = 0;
+        n = db.delete("tb_fuliao_info",
+                "id_dahuo = ?",
+                new String[]{String.valueOf(id)});
+        if (n > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isHaveFuliaoInfoWithDahuoId(int id) {
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_fuliao_info",
+                null,
+                "id_dahuo=?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.close();
+            db.close();
+            myOpenHelper.close();
+            return true;
+        } else {
+            db.close();
+            myOpenHelper.close();
+            return false;
+        }
     }
 }

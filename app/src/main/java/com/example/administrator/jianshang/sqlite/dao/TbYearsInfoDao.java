@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.jianshang.sqlite.MyOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2019/6/2.
  */
@@ -55,11 +57,31 @@ public class TbYearsInfoDao {
         return n;
     }
 
+//    /**
+//     * 查询年份表
+//     * @return
+//     */
+//    public Cursor getAllYearsInfo() {
+//        db = myOpenHelper.getWritableDatabase();
+//        Cursor cursor = db.query("tb_year_info",
+//                null,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null);
+////        db.close();
+////        myOpenHelper.close();
+//        return cursor;
+//    }
+
+
     /**
      * 查询年份表
      * @return
      */
-    public Cursor getAllYearsInfo() {
+    public ArrayList<String> getAllYearsInfo() {
+        ArrayList<String> datas = new ArrayList<String>();
         db = myOpenHelper.getWritableDatabase();
         Cursor cursor = db.query("tb_year_info",
                 null,
@@ -68,10 +90,19 @@ public class TbYearsInfoDao {
                 null,
                 null,
                 null);
-//        db.close();
-//        myOpenHelper.close();
-        return cursor;
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                datas.add(cursor.getString(cursor.getColumnIndex("year_info")));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        myOpenHelper.close();
+       return datas;
     }
+
 
     /**
      * 查询年份表

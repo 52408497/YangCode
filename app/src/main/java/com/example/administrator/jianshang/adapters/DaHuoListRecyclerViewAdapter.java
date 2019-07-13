@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,9 +27,16 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
     private OnImageClickListener onImageClickListener;
     private OnTextClickListener onTextClickListener;
 
+
     private int orientation;
     private final Context context;
     private ArrayList<DBDaHuoInfoBean> datas;
+
+    private int mPosition = -1;
+
+    public int getmPosition() {
+        return mPosition;
+    }
 
     /**
      *
@@ -139,9 +147,6 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
             iv_icon = itemView.findViewById(R.id.iv_icon);
             tv_title = itemView.findViewById(R.id.tv_title);
 
-
-
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -151,7 +156,16 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
                 }
             });
 
+            itemView.setLongClickable(true);
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View view) {
+                    mPosition = getAdapterPosition();
+                    return false;
+                }
+            });
 
 //            iv_icon.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -235,6 +249,8 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
     public void setOnTextClickListener(OnTextClickListener onTextClickListener) {
         this.onTextClickListener = onTextClickListener;
     }
+
+
 
 
 }
