@@ -74,6 +74,7 @@ public class TbDahuoInfoDao {
         long n = db.insert("tb_dahuo_info",
                 null,
                 values);
+
         if (n > 0) {
             return true;
         } else {
@@ -151,5 +152,47 @@ public class TbDahuoInfoDao {
             return false;
         }
 
+    }
+
+
+    public DBDaHuoInfoBean getDBDaHuoInfoBeanForClothesID(int clothesInfoID) {
+        DBDaHuoInfoBean dbDaHuoInfoBean = new DBDaHuoInfoBean();
+
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_dahuo_info",
+                null,
+                "_id_dahuo=?",
+                new String[]{String.valueOf(clothesInfoID)},
+                null,
+                null,
+                null);
+
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                dbDaHuoInfoBean.setId(cursor.getInt(cursor.getColumnIndex("_id_dahuo")));
+                dbDaHuoInfoBean.setChengbenImg(cursor.getString(cursor.getColumnIndex("chengben_img")));
+                dbDaHuoInfoBean.setFengmianImg(cursor.getString(cursor.getColumnIndex("fengmian_img")));
+                dbDaHuoInfoBean.setTag(cursor.getString(cursor.getColumnIndex("tag")));
+                dbDaHuoInfoBean.setBeizhu(cursor.getString(cursor.getColumnIndex("beizhu")));
+                dbDaHuoInfoBean.setYangbanhao(cursor.getString(cursor.getColumnIndex("yangbanhao")));
+                dbDaHuoInfoBean.setKuanshimingcheng(cursor.getString(cursor.getColumnIndex("kuanshimingcheng")));
+                dbDaHuoInfoBean.setKuanhao(cursor.getString(cursor.getColumnIndex("kuanhao")));
+                dbDaHuoInfoBean.setYearInfo(cursor.getString(cursor.getColumnIndex("year_info")));
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        myOpenHelper.close();
+
+        return dbDaHuoInfoBean;
+    }
+
+    public int getLastID(SQLiteDatabase db) {
+
+
+        return 0;
     }
 }

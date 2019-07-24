@@ -2,7 +2,7 @@ package com.example.administrator.jianshang.bean;
 
 import java.util.ArrayList;
 
-public class NewDaHuoClothesBean {
+public class ClothesInfoBean {
     private DBDaHuoInfoBean dbDaHuoInfoBean;
     private ArrayList<DBDahuoImgBean> dbDahuoImgBeans;      //该款式的款式图片集合
     private ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans;  //该款式的面辅料信息集合

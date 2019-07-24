@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
 import com.example.administrator.jianshang.sqlite.MyOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2019/6/2.
  */
@@ -78,5 +80,59 @@ public class TbFuliaoInfoDao {
             myOpenHelper.close();
             return false;
         }
+    }
+
+    public ArrayList<DBFuliaoInfoBean> getDBDaHuoFuliaoInfoBeansForClothesID(int clothesInfoID) {
+        ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans = new ArrayList<DBFuliaoInfoBean>();
+
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_fuliao_info",
+                null,
+                "id_dahuo = ?",
+                new String[]{String.valueOf(clothesInfoID)},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                //datas.add(cursor.getString(cursor.getColumnIndex("year_info")));
+                DBFuliaoInfoBean dbFuliaoInfoBean = new DBFuliaoInfoBean();
+                dbFuliaoInfoBean.setId(cursor.getInt(cursor.getColumnIndex("_id_fuliao")));
+                dbFuliaoInfoBean.setDahuoId(cursor.getInt(cursor.getColumnIndex("id_dahuo")));
+                dbFuliaoInfoBean.setFuliaoName(cursor.getString(cursor.getColumnIndex("fuliao_name")));
+                dbFuliaoInfoBean.setFuliaoImg(cursor.getString(cursor.getColumnIndex("fuliao_img")));
+                dbFuliaoInfoBean.setJiage(cursor.getString(cursor.getColumnIndex("jiage")));
+                dbFuliaoInfoBean.setGongyinshangId(cursor.getInt(cursor.getColumnIndex("id_gongyingshang")));
+                dbFuliaoInfoBean.setBeizhu(cursor.getString(cursor.getColumnIndex("beizhu")));
+
+                dbFuliaoInfoBeans.add(dbFuliaoInfoBean);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return dbFuliaoInfoBeans;
+    }
+
+
+    public ArrayList<String> getImgsWithDahuoIdHaveDb(int id, SQLiteDatabase db) {
+        ArrayList<String> imgs = new ArrayList<>();
+        //db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_fuliao_info",
+                null,
+                "id_dahuo=?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                imgs.add(cursor.getString(cursor.getColumnIndex("fuliao_img")));
+            }
+            cursor.close();
+        }
+        return imgs;
     }
 }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,10 +16,8 @@ import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.adapters.DaHuoListRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.RecycleViewDivider;
 import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
-import com.example.administrator.jianshang.fragment.DahuoFragment;
-import com.example.administrator.jianshang.sqlite.dao.NewClothesDao;
+import com.example.administrator.jianshang.sqlite.dao.ClothesInfoDao;
 import com.example.administrator.jianshang.sqlite.dao.TbDahuoInfoDao;
-import com.example.administrator.jianshang.sqlite.dao.TbFuliaoInfoDao;
 
 import java.util.ArrayList;
 
@@ -82,11 +79,15 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
     public boolean onContextItemSelected(MenuItem item) {
         //Toast.makeText(DaHuoListActivity.this,"点击删除",Toast.LENGTH_SHORT).show();
         String kh = dbDaHuoInfoBeans.get(adapter.getmPosition()).getKuanhao().toString();
-        int id = dbDaHuoInfoBeans.get(adapter.getmPosition()).getId();
+        //int id = dbDaHuoInfoBeans.get(adapter.getmPosition()).getId();
+
+        DBDaHuoInfoBean dbDaHuoInfoBean = dbDaHuoInfoBeans.get(adapter.getmPosition());
+
+
 
         //根据id删除内容，包括大货信息表/大货图片表/辅料信息表
-        NewClothesDao newClothesDao = new NewClothesDao(DaHuoListActivity.this);
-        boolean removeIsSuccess = newClothesDao.removeClothesForId(id);
+        ClothesInfoDao clothesInfoDao = new ClothesInfoDao(DaHuoListActivity.this);
+        boolean removeIsSuccess = clothesInfoDao.removeClothesForId(dbDaHuoInfoBean);
 
         if(removeIsSuccess){
             adapter.removeData(adapter.getmPosition());
@@ -112,11 +113,14 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
             @Override
             public void onItemClick(View view, DBDaHuoInfoBean data) {
                 //点击款式弹出款式信息详情
-                Toast.makeText(DaHuoListActivity.this,"点击款式",Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent();
-//                intent.setClass(DaHuoListActivity.this, DaHuoListActivity.class);
-//                intent.putExtra("yearInfo", data);
-//                startActivity(intent);
+               // Toast.makeText(DaHuoListActivity.this,"点击款式",Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent();
+                intent.setClass(DaHuoListActivity.this, DaHuoClothesInfoActivity.class);
+                //intent.putExtra("ClothesInfoID", data.getId());
+
+                intent.putExtra("DBDaHuoInfoBean", data);
+                startActivity(intent);
 
 
             }

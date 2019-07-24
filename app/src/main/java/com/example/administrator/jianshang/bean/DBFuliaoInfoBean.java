@@ -1,6 +1,7 @@
 package com.example.administrator.jianshang.bean;
 
 public class DBFuliaoInfoBean {
+
     private int id;
     private int dahuoId;        //大货ID
     private String fuliaoName;  //辅料名称

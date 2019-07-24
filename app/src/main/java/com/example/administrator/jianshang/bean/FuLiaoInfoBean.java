@@ -5,6 +5,12 @@ public class FuLiaoInfoBean {
     private String fuliao_img_name;
     private int jiage;
     private String gongyingshang;
+    private int gongyinshangId;
+
+    private int id;
+    private int dahuoId;        //大货ID
+    private String beizhu;      //备注
+
 
     public int getGongyinshangId() {
         return gongyinshangId;
@@ -13,10 +19,6 @@ public class FuLiaoInfoBean {
     public void setGongyinshangId(int gongyinshangId) {
         this.gongyinshangId = gongyinshangId;
     }
-
-    private int gongyinshangId;
-
-
 
     public String getFuliao_name() {
         return fuliao_name;
@@ -51,7 +53,28 @@ public class FuLiaoInfoBean {
     }
 
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public int getDahuoId() {
+        return dahuoId;
+    }
+
+    public void setDahuoId(int dahuoId) {
+        this.dahuoId = dahuoId;
+    }
+
+    public String getBeizhu() {
+        return beizhu;
+    }
+
+    public void setBeizhu(String beizhu) {
+        this.beizhu = beizhu;
+    }
 }
 

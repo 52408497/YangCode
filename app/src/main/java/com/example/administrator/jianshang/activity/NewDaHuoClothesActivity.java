@@ -48,8 +48,8 @@ import com.example.administrator.jianshang.bean.FileBean;
 import com.example.administrator.jianshang.bean.FuLiaoInfoBean;
 import com.example.administrator.jianshang.bean.GongYinShangBean;
 import com.example.administrator.jianshang.bean.HandlerMessageBean;
-import com.example.administrator.jianshang.bean.NewDaHuoClothesBean;
-import com.example.administrator.jianshang.sqlite.dao.NewClothesDao;
+import com.example.administrator.jianshang.bean.ClothesInfoBean;
+import com.example.administrator.jianshang.sqlite.dao.ClothesInfoDao;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -78,7 +78,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private static final int INSERT_DATABASE = 0x0002;
 
 
-    private NewClothesDao newClothesDao;
+    private ClothesInfoDao clothesInfoDao;
 
     private View oldView = null;
     private TextView oldTvFmView = null;
@@ -142,7 +142,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans;//辅料信息列表集合
     private ArrayList<DBDahuoImgBean> dbDahuoImgBeans;  //大货图片列表集
     private DBDaHuoInfoBean dbDaHuoInfoBean;            //数据库大货信息Bean
-    private NewDaHuoClothesBean newDaHuoClothesBean;    //新添加的款式信息Bean
+    private ClothesInfoBean clothesInfoBean;    //新添加的款式信息Bean
     private boolean copeFileIsOK = false;               //拷贝文件操作状态（用来判断progressDialog是否可关闭）
     private boolean insertDataBaseIsOK = false;         //将数据保存到数据库的状态（用来判断progressDialog是否可关闭）
     private ProgressDialog progressDialog;
@@ -798,7 +798,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
         } else {
 
 //从数据库中查询该款号是否存在，若不存在则可添加
-            NewClothesDao dao = new NewClothesDao(NewDaHuoClothesActivity.this);
+            ClothesInfoDao dao = new ClothesInfoDao(NewDaHuoClothesActivity.this);
             boolean haveThisKH = dao.getInfoForYearAndKH(timeData, sKH);
             if (!haveThisKH) {
 
@@ -841,7 +841,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
 
                 //保存数据到数据库
-                newDaHuoClothesBean = new NewDaHuoClothesBean();
+                clothesInfoBean = new ClothesInfoBean();
                 dbDaHuoInfoBean = new DBDaHuoInfoBean();
                 dbDaHuoInfoBean.setYearInfo(timeData);
                 dbDaHuoInfoBean.setKuanhao(sKH);
@@ -851,7 +851,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                 dbDaHuoInfoBean.setFengmianImg(sfengmian);
                 dbDaHuoInfoBean.setTag(ClothesTagType.getTypePT());
                 dbDaHuoInfoBean.setChengbenImg(fileNameForCB);
-                newDaHuoClothesBean.setDbDaHuoInfoBean(dbDaHuoInfoBean);
+                clothesInfoBean.setDbDaHuoInfoBean(dbDaHuoInfoBean);
 
                 fileNameForCB = "";
                 dbDahuoImgBeans = new ArrayList<DBDahuoImgBean>();
@@ -885,7 +885,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 //            Log.e("---照片名,所有显示的照片：---", bean.getFileUri().toString());
                     }
                 }
-                newDaHuoClothesBean.setDbDahuoImgBeans(dbDahuoImgBeans);
+                clothesInfoBean.setDbDahuoImgBeans(dbDahuoImgBeans);
 
                 if (fuLiaoInfoBeans.size() > 0) {
                     for (FuLiaoInfoBean bean :
@@ -900,7 +900,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     }
                 }
 
-                newDaHuoClothesBean.setDbFuliaoInfoBeans(dbFuliaoInfoBeans);
+                clothesInfoBean.setDbFuliaoInfoBeans(dbFuliaoInfoBeans);
 
 
                 //将数据添加到数据库中
@@ -908,8 +908,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     @Override
                     public void run() {
                         HandlerMessageBean messageBean = new HandlerMessageBean();
-                        newClothesDao = new NewClothesDao(NewDaHuoClothesActivity.this);
-                        boolean b = newClothesDao.addNewClothes(newDaHuoClothesBean);
+                        clothesInfoDao = new ClothesInfoDao(NewDaHuoClothesActivity.this);
+                        boolean b = clothesInfoDao.addNewClothes(clothesInfoBean);
                         messageBean.setAddIsSuccess(b);
                         messageBean.setInsertDataBaseIsOK(true);
                         Message msg = new Message();

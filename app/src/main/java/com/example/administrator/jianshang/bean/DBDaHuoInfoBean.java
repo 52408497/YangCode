@@ -1,10 +1,12 @@
 package com.example.administrator.jianshang.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2019/6/4.
  */
 
-public class DBDaHuoInfoBean {
+public class DBDaHuoInfoBean implements Serializable {
     private int id;
     private String kuanhao;             //款号
     private String kuanshimingcheng;    //款式名称

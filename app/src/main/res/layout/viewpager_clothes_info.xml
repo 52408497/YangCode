@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_vp_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_jbxx"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_marginBottom="5dp">
+
+            <LinearLayout
+                android:id="@+id/ll_jbxx_title"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/qianhuise"
+                android:gravity="center|left"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="基本信息" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/ll_jbxx_jbxx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tv_kh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="款号：" />
+
+                <TextView
+                    android:id="@+id/tv_kh_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_kh"
+                    android:text="TextKH" />
+
+                <TextView
+                    android:id="@+id/tv_ksmc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/tv_kh_value"
+                    android:text="款式名称：" />
+
+                <TextView
+                    android:id="@+id/tv_ksmc_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_ksmc"
+                    android:text="TextKSMC" />
+
+                <TextView
+                    android:id="@+id/tv_ybh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_kh"
+                    android:text="样版编号：" />
+
+                <TextView
+                    android:id="@+id/tv_ybh_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_ybh"
+                    android:layout_below="@+id/tv_kh"
+                    android:text="TextYBH" />
+
+                <TextView
+                    android:id="@+id/tv_bz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_ybh_value"
+                    android:layout_marginLeft="20dp"
+                    android:layout_below="@+id/tv_kh"
+                    android:text="备注：" />
+
+                <TextView
+                    android:id="@+id/tv_bz_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_kh"
+                    android:layout_toRightOf="@+id/tv_bz"
+                    android:text="TextBZ" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_kscb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="5dp"
+            android:padding="5dp"
+            android:background="@color/white"
+            android:gravity="top|left">
+            <LinearLayout
+                android:id="@+id/ll_kscb_title"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/qianhuise"
+                android:gravity="center|left"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="款式成本" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_kscb_kscb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|center"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_kstp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/white"
+            android:gravity="top|center">
+            <LinearLayout
+                android:id="@+id/ll_kstp_title"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/qianhuise"
+                android:gravity="center|left"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="款式图片" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_kstp_kstp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|center"
+                android:padding="5dp"
+                android:orientation="vertical">
+
+                <!--<ImageView-->
+                    <!--android:adjustViewBounds="true"-->
+
+
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:src="@drawable/default_no_img"-->
+                    <!--android:scaleType="fitCenter"/>-->
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_fltp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:padding="5dp"-->
+            <!--android:layout_marginBottom="5dp"-->
+            <!--android:background="@color/white">-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/ll_fltp_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:background="@color/qianhuise"-->
+                <!--android:gravity="center|left"-->
+                <!--android:padding="5dp">-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="辅料" />-->
+            <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
+    </LinearLayout>
+
+
+</ScrollView>
+
+
+

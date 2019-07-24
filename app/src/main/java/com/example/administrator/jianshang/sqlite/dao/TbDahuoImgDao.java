@@ -9,6 +9,8 @@ import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
 import com.example.administrator.jianshang.bean.DBDahuoImgBean;
 import com.example.administrator.jianshang.sqlite.MyOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2019/6/2.
  */
@@ -75,5 +77,81 @@ public class TbDahuoImgDao {
             myOpenHelper.close();
             return false;
         }
+    }
+
+    public ArrayList<String> getImgsWithDahuoId(int id) {
+        ArrayList<String> imgs = new ArrayList<>();
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_dahuo_img",
+                null,
+                "id_dahuo=?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                imgs.add(cursor.getString(cursor.getColumnIndex("img_name")));
+            }
+            cursor.close();
+        }
+
+        db.close();
+        myOpenHelper.close();
+        return imgs;
+    }
+
+    public ArrayList<String> getImgsWithDahuoIdHaveDb(int id, SQLiteDatabase db) {
+        ArrayList<String> imgs = new ArrayList<>();
+        //db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_dahuo_img",
+                null,
+                "id_dahuo = ?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null);
+
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                imgs.add(cursor.getString(cursor.getColumnIndex("img_name")));
+            }
+            cursor.close();
+        }
+        return imgs;
+    }
+
+
+    public ArrayList<DBDahuoImgBean> getDBDaHuoImgBeansForClothesID(int clothesInfoID) {
+
+        ArrayList<DBDahuoImgBean> dbDahuoImgBeans = new ArrayList<DBDahuoImgBean>();
+
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_dahuo_img",
+                null,
+                "id_dahuo = ?",
+                new String[]{String.valueOf(clothesInfoID)},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                //datas.add(cursor.getString(cursor.getColumnIndex("year_info")));
+                DBDahuoImgBean dbDahuoImgBean = new DBDahuoImgBean();
+                dbDahuoImgBean.setId(cursor.getInt(cursor.getColumnIndex("_id_dahuo_img")));
+                dbDahuoImgBean.setDahuoId(cursor.getInt(cursor.getColumnIndex("id_dahuo")));
+                dbDahuoImgBean.setImgType(cursor.getString(cursor.getColumnIndex("img_type")));
+                dbDahuoImgBean.setImgName(cursor.getString(cursor.getColumnIndex("img_name")));
+
+                dbDahuoImgBeans.add(dbDahuoImgBean);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return dbDahuoImgBeans;
+
     }
 }
