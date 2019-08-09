@@ -32,6 +32,8 @@ dependencies {
 
     implementation 'com.zhihu.android:matisse:0.4.3'       //知乎开源的图片选择库
 
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'  //可以手势缩放图片
+
     androidTestImplementation('com.android.support:support-annotations:26.1.0') {
         force = true
     }

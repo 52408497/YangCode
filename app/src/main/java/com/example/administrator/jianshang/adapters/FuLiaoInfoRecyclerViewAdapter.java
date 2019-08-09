@@ -90,6 +90,7 @@ public class FuLiaoInfoRecyclerViewAdapter extends RecyclerView.Adapter<FuLiaoIn
 //              .animate(R.anim.glide_anim)                 //动画
 //                .centerCrop()                               //图片显示样式
 //                .fitCenter()                                //图片显示样式
+                .dontAnimate()
                 .into(holder.iv_fl_tupian);
 
         holder.tv_dh_id.setText(data.getDahuoId()+"");

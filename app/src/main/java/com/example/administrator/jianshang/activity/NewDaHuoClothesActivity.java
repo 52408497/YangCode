@@ -28,6 +28,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,7 @@ import com.example.administrator.jianshang.bean.GongYinShangBean;
 import com.example.administrator.jianshang.bean.HandlerMessageBean;
 import com.example.administrator.jianshang.bean.ClothesInfoBean;
 import com.example.administrator.jianshang.sqlite.dao.ClothesInfoDao;
+import com.example.administrator.jianshang.sqlite.dao.TbGongyinshangInfoDao;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -85,6 +88,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
 
     //--------主窗体控件----------
+    private ScrollView scrollView;
     private EditText etKH;       //款号
     private EditText etKSMC;    //款式名称
     private EditText etYBH;     //样板号
@@ -147,6 +151,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private boolean insertDataBaseIsOK = false;         //将数据保存到数据库的状态（用来判断progressDialog是否可关闭）
     private ProgressDialog progressDialog;
     private boolean addIsSuccess = false;               //保存数据是否成功
+    private float scrollViewY;
+
 
     private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -244,11 +250,19 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     }
                     break;
             }
-
-
         }
     };
 
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            // 改变滚动条的位置
+            boolean scrollDownCB = getIntent().getBooleanExtra("SCROLL_DOWN_CB", false);
+            RelativeLayout rl_kscb = findViewById(R.id.rl_kscb);
+
+            scrollView.scrollTo(0, rl_kscb.getTop());
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -292,6 +306,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
      * 获取View控件对象
      */
     private void initView() {
+        scrollView = findViewById(R.id.sv_scrollView);
+
         fuliaoListRecyclerview = findViewById(R.id.recyclerview_img_fl_list);
         imgKsListRecyclerview = findViewById(R.id.recyclerview_img_ks_list);
         ivCB = findViewById(R.id.iv_cb);
@@ -441,9 +457,13 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
      *
      * @param view
      */
-    @AfterPermissionGranted(PERMISSION_CAMERA_SDCARD)
-    public void paiZhaoOnClickForKSTP(View view) {
 
+    public void paiZhaoOnClickForKSTP(View view) {
+        getKstpForPZ();
+    }
+
+    //@AfterPermissionGranted(PERMISSION_CAMERA_SDCARD)
+    private void getKstpForPZ() {
         permissions = new String[]{
                 Manifest.permission.CAMERA,                 //使用相机的权限
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, //写入SD卡的权限
@@ -500,9 +520,12 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
      *
      * @param view
      */
-    @AfterPermissionGranted(PERMISSION_SDCARD)
     public void xiangCeOnClickForKSTP(View view) {
+        getKstpForXC();
+    }
 
+    //@AfterPermissionGranted(PERMISSION_SDCARD)
+    private void getKstpForXC() {
         permissions = new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, //写入SD卡的权限
                 Manifest.permission.READ_EXTERNAL_STORAGE   //读取SD卡的权限
@@ -532,8 +555,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                     PERMISSION_SDCARD,
                     permissions);
         }
-
-
     }
 
     /**
@@ -623,6 +644,14 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
                 case CODE_CAMERA_CB_REQUEST:    //款式成本拍照回调
                     showImages(fileUriCBForContent, ivCB);
+                    getIntent().putExtra("SCROLL_DOWN_CB", true);
+                    Handler hd = new Handler();
+                    hd.postDelayed(runnable, 200);
+
+                    //scrollto(ivCB);
+                    //scrollView.smoothScrollTo(0,ivCB.getTop());
+//                    scrollView = findViewById(R.id.sv_scrollView);
+//                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                     break;
 
                 case CODE_CAMERA_FL_REQUEST:    //辅料图片拍照回调
@@ -631,6 +660,25 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             }
         }
     }
+
+//    private void scrollto(final View view,String sBooleanExtra){
+//        final boolean scrollDown = getIntent().getBooleanExtra(sBooleanExtra,false);
+//        if (scrollDown){
+//            scrollView.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    int [] localtion = new int[2];
+//                    view.getLocationOnScreen(localtion);
+//                    int offset = localtion[1] - scrollView.getMeasuredHeight();
+//                    if (offset < 0){
+//                        offset = 0;
+//                    }
+//                    scrollView.smoothScrollTo(0,offset);
+//                }
+//            });
+//        }
+//    }
+
 
     /**
      * 将图片显示在ImageView控件中
@@ -980,18 +1028,34 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         btnOk.setText("确定");
 
 
-                        //下拉列表中的值，这里暂时固定写死，以后将改为从数据库中动态获取
-                        List<GongYinShangBean> gongyinshangInfoBeans = new ArrayList<GongYinShangBean>();
-                        String[] gys = {
-                                "贵宜典", "姚明织带", "画龙点睛", "三鼎织带"
-                        };
+                        TbGongyinshangInfoDao gongyinshangInfoDao = new TbGongyinshangInfoDao(NewDaHuoClothesActivity.this);
+                        List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
 
-                        for (int i = 0; i < 4; i++) {
-                            GongYinShangBean gongYinShangBean = new GongYinShangBean();
-                            gongYinShangBean.setId(i + 1);
-                            gongYinShangBean.setName(gys[i]);
-                            gongyinshangInfoBeans.add(gongYinShangBean);
+                        if (gongyinshangInfoBeans.size()<=0){
+                            GongYinShangBean bean = new GongYinShangBean();
+                            bean.setName("暂无供应商");
+                            bean.setId(-1);
+                            gongyinshangInfoBeans.add(bean);
                         }
+//                        下拉列表中的值，这里暂时固定写死，以后将改为从数据库中动态获取
+//
+//                        List<GongYinShangBean> gongyinshangInfoBeans = new ArrayList<GongYinShangBean>();
+
+//                        String[] gys = {
+//                                "贵宜典", "姚明织带", "画龙点睛", "三鼎织带"
+//                        };
+//
+//
+//
+//                        for (int i = 0; i < 4; i++) {
+//                            GongYinShangBean gongYinShangBean = new GongYinShangBean();
+//                            gongYinShangBean.setId(i + 1);
+//                            gongYinShangBean.setName(gys[i]);
+//                            gongyinshangInfoBeans.add(gongYinShangBean);
+//                        }
+
+                        //--------------------------------------------------
+
 
 //                        ArrayAdapter<GongYinShangBean> adapter = new ArrayAdapter<GongYinShangBean>( view.getContext(),
 //                                android.R.layout.simple_spinner_item, gongyinshangInfoBeans);
@@ -1048,8 +1112,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                                 };
 
                                 if (EasyPermissions.hasPermissions(v.getContext(), permissions)) {
-
-
                                     //有权限直接调用系统相机拍照
                                     if (hasSdcard()) {
                                         fileNameForFL = System.currentTimeMillis() + ".jpg";
@@ -1082,13 +1144,10 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                                                 Toast.LENGTH_SHORT)
                                                 .show();
                                     }
-
-
                                 } else {
                                     //权限还未申请，申请权限
                                     EasyPermissions.requestPermissions((Activity) v.getContext(), "需要使用到相机和读写SD卡的权限", PERMISSION_CAMERA_SDCARD,
                                             permissions);
-
                                 }
                             }
                         });
@@ -1099,7 +1158,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                             @Override
                             public void onClick(View v) {
                                 String fuliao_name = etName.getText().toString().trim();
-                                int jiage = etJiage.getText().toString().trim().equals("") ? 0 : Integer.parseInt(etJiage.getText().toString().trim());
+                                float jiage = etJiage.getText().toString().trim().equals("") ? 0 : Float.parseFloat(etJiage.getText().toString().trim());
 //                                String gongyinshang = spGongyinshang.getSelectedItem().toString();
                                 Integer gongyinshangId = ((GongYinShangBean) spGongyinshang.getSelectedItem()).getId();
                                 String gongyinshang = ((GongYinShangBean) spGongyinshang.getSelectedItem()).getName();
@@ -1203,7 +1262,12 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
      * @param view
      */
     public void paizhaoOnClickForKSCB(View view) {
+        scrollViewY = scrollView.getScrollY();
+        getKscbForPZ();
+    }
 
+    //@AfterPermissionGranted(PERMISSION_CAMERA_SDCARD)
+    private void getKscbForPZ() {
         permissions = new String[]{
                 Manifest.permission.CAMERA,                 //使用相机的权限
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, //写入SD卡的权限

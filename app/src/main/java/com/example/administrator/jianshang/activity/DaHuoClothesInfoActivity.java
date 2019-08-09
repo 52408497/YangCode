@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.Tools.ApplictionWidthAndHeight;
+import com.example.administrator.jianshang.Tools.Constants;
 import com.example.administrator.jianshang.adapters.DaHuoClothesInfoViewPagerAdapter;
 import com.example.administrator.jianshang.adapters.FuLiaoAddRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.FuLiaoInfoRecyclerViewAdapter;
@@ -28,6 +29,7 @@ import com.example.administrator.jianshang.bean.DBDahuoImgBean;
 import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
 import com.example.administrator.jianshang.bean.FuLiaoInfoBean;
 import com.example.administrator.jianshang.sqlite.dao.ClothesInfoDao;
+import com.example.administrator.jianshang.sqlite.dao.TbGongyinshangInfoDao;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,10 +113,14 @@ public class DaHuoClothesInfoActivity extends AppCompatActivity {
 
     private ArrayList<FuLiaoInfoBean> getFuLiaoInfoBeans(ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans) {
         ArrayList<FuLiaoInfoBean> fuLiaoInfoBeans = new ArrayList<>();
+        TbGongyinshangInfoDao tbGongyinshangInfoDao = new TbGongyinshangInfoDao(DaHuoClothesInfoActivity.this);
         for (DBFuliaoInfoBean bean :
                 dbFuliaoInfoBeans) {
             //根据供应商ID查询供应商名字
-            String gongyinshang = "贵一点";
+            String gongyinshang = tbGongyinshangInfoDao.getGongyinshangNameWithId(bean.getGongyinshangId());
+
+
+//            String gongyinshang = "贵一点";
 
             FuLiaoInfoBean fuLiaoInfoBean = new FuLiaoInfoBean();
             fuLiaoInfoBean.setId(bean.getId());
@@ -122,7 +128,7 @@ public class DaHuoClothesInfoActivity extends AppCompatActivity {
             fuLiaoInfoBean.setBeizhu(bean.getBeizhu());
             fuLiaoInfoBean.setFuliao_name(bean.getFuliaoName());
             fuLiaoInfoBean.setFuliao_img_name(bean.getFuliaoImg());
-            fuLiaoInfoBean.setJiage(Integer.parseInt(bean.getJiage()));
+            fuLiaoInfoBean.setJiage(Float.parseFloat(bean.getJiage()));
             fuLiaoInfoBean.setGongyingshang(gongyinshang);
             fuLiaoInfoBean.setGongyinshangId(bean.getGongyinshangId());
 
@@ -212,13 +218,23 @@ public class DaHuoClothesInfoActivity extends AppCompatActivity {
         iv_kscb_value.setAdjustViewBounds(true);
 
         String chengBenImgName = dbDaHuoInfoBean.getChengbenImg();
-        Uri fileUriForContent = getUriForContent(chengBenImgName);
+        final Uri fileUriForContent = getUriForContent(chengBenImgName);
         Glide.with(DaHuoClothesInfoActivity.this)
                 .load(fileUriForContent)
                 .placeholder(R.drawable.default_no_img)     //占位图
                 .error(R.drawable.default_no_img)           //出错的占位图
                 //.override(defoutImg_width, getDefoutImg_height)
+                .dontAnimate()
                 .into(iv_kscb_value);
+
+        iv_kscb_value.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DaHuoClothesInfoActivity.this,ImageDetailActivity.class);
+                intent.putExtra(Constants.ID , fileUriForContent.toString());
+                startActivity(intent);
+            }
+        });
 
        ll_kscb_kscb.addView(iv_kscb_value);
 
@@ -236,13 +252,24 @@ public class DaHuoClothesInfoActivity extends AppCompatActivity {
                 imageView.setAdjustViewBounds(true);
 
                 String ksImgName = bean.getImgName();
-                Uri uri = getUriForContent(ksImgName);
+                final Uri uri = getUriForContent(ksImgName);
                 Glide.with(DaHuoClothesInfoActivity.this)
                         .load(uri)
                         .placeholder(R.drawable.default_no_img)     //占位图
                         .error(R.drawable.default_no_img)           //出错的占位图
                        // .override(defoutImg_width, getDefoutImg_height)
+                        .dontAnimate()
                         .into(imageView);
+
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(DaHuoClothesInfoActivity.this,ImageDetailActivity.class);
+                        intent.putExtra(Constants.ID , uri.toString());
+                        startActivity(intent);
+                    }
+                });
+
                 ll_kstp_kstp.addView(imageView);
             }
         } else {

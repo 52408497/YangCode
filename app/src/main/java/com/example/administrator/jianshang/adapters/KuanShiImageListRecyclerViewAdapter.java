@@ -142,6 +142,7 @@ public class KuanShiImageListRecyclerViewAdapter extends RecyclerView.Adapter<Ku
                 .error(R.drawable.default_no_img)           //出错的占位图
                 .override(width, height)                    //图片显示的分辨率，像素值，可转化为dp再设
 //              .animate(R.anim.glide_anim)                 //动画
+                .dontAnimate()
                 .centerCrop()                               //图片显示样式
                 .fitCenter()                                //图片显示样式
                 .into(holder.iv_icon);

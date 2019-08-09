@@ -1,14 +1,18 @@
 package com.example.administrator.jianshang.bean;
 
-public class DBGongyinshangInfoBean {
+import java.io.Serializable;
+
+public class DBGongyinshangInfoBean  implements Serializable {
     private int id;
     private String gongYinShangType;    //供应商类别
     private String gongYinShangName;    //供应商名字
     private String dangKouAddress;      //档口地址
     private String cangKuAddress;       //仓库地址
-    private int dangKouTelephone;       //档口电话
-    private int cangKuTelephone;        //仓库电话
-    private String mingPianImg;         //名片图片文件名
+    private long dangKouTelephone;       //档口电话
+    private long cangKuTelephone;        //仓库电话
+    private String mingPianImgZM;         //名片正面图片文件名
+    private String mingPianImgFM;       //名片反面图片文件名
+
 
     public int getId() {
         return id;
@@ -50,27 +54,35 @@ public class DBGongyinshangInfoBean {
         this.cangKuAddress = cangKuAddress;
     }
 
-    public int getDangKouTelephone() {
+    public long getDangKouTelephone() {
         return dangKouTelephone;
     }
 
-    public void setDangKouTelephone(int dangKouTelephone) {
+    public void setDangKouTelephone(long dangKouTelephone) {
         this.dangKouTelephone = dangKouTelephone;
     }
 
-    public int getCangKuTelephone() {
+    public long getCangKuTelephone() {
         return cangKuTelephone;
     }
 
-    public void setCangKuTelephone(int cangKuTelephone) {
+    public void setCangKuTelephone(long cangKuTelephone) {
         this.cangKuTelephone = cangKuTelephone;
     }
 
-    public String getMingPianImg() {
-        return mingPianImg;
+    public String getMingPianImgZM() {
+        return mingPianImgZM;
     }
 
-    public void setMingPianImg(String mingPianImg) {
-        this.mingPianImg = mingPianImg;
+    public void setMingPianImgZM(String mingPianImgZM) {
+        this.mingPianImgZM = mingPianImgZM;
+    }
+
+    public String getMingPianImgFM() {
+        return mingPianImgFM;
+    }
+
+    public void setMingPianImgFM(String mingPianImgFM) {
+        this.mingPianImgFM = mingPianImgFM;
     }
 }

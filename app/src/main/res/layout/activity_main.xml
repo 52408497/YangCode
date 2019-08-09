@@ -35,14 +35,14 @@
         <RadioButton
             android:id="@+id/rb_daHuo"
             android:drawableTop="@drawable/rb_dahuo_drawable_selector"
-            android:text="大货"
+            android:text="款式"
             style="@style/radioButton_style"/>
 
-        <RadioButton
-            android:id="@+id/rb_yangYi"
-            android:drawableTop="@drawable/rb_yangyi_drawable_selector"
-            android:text="样衣"
-            style="@style/radioButton_style"/>
+        <!--<RadioButton-->
+            <!--android:id="@+id/rb_yangYi"-->
+            <!--android:drawableTop="@drawable/rb_yangyi_drawable_selector"-->
+            <!--android:text="样衣"-->
+            <!--style="@style/radioButton_style"/>-->
 
         <RadioButton
             android:id="@+id/rb_gongYingShang"

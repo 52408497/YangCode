@@ -72,28 +72,23 @@ public class DahuoFragment extends BaseFragment {
 
         registerForContextMenu(recyclerviewTime);//为recyclerview注册上下文菜单
 
-        //创建弹出窗口
-        createDialog();
-
         yearsInfoDao = new TbYearsInfoDao(mContext);
         //查询数据库,添加数据
-
         datas = yearsInfoDao.getAllYearsInfo();
 
-        if (datas.size()>0) {
-            //使用RecyclerView显示数据
-            useRecyclerViewToShow();
+        //使用RecyclerView显示数据
+        useRecyclerViewToShow();
 
-            //添加按钮的点击事件监听
-            setOnClickListener();
-
+        if (datas.size() > 0) {
             //添加每项点击事件监听
             setOnItemClickListener();
         }
+        //创建弹出窗口
+        createDialog();
 
+        //添加按钮的点击事件监听
+        setOnClickListener();
     }
-
-
 
 
     @Override
@@ -104,23 +99,23 @@ public class DahuoFragment extends BaseFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        if (getUserVisibleHint()){
+        if (getUserVisibleHint()) {
 
             String sYearInfo = datas.get(adapter.getmPosition());
 
             //从数据库中删除
             n = yearsInfoDao.delYearInfo(sYearInfo);
-            if(n>0){
+            if (n > 0) {
                 adapter.removeData(adapter.getmPosition());
                 //重新添加每项点击事件监听
                 setOnItemClickListener();
                 Toast.makeText(mContext, "数据删除成功！", Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 Toast.makeText(mContext, "数据删除过程中出现错误，请重试！", Toast.LENGTH_SHORT).show();
             }
             n = -1;
             return true;
-        }else {
+        } else {
             return false;
         }
 
@@ -159,9 +154,9 @@ public class DahuoFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String yearInfo = etYearInfo.getText().toString().trim();
-                        if (yearInfo.equals("") || yearInfo ==null){
+                        if (yearInfo.equals("") || yearInfo == null) {
                             Toast.makeText(mContext, "数据不能为空！", Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
 
                             //根据年份信息查询数据库是否存在
                             cursor = yearsInfoDao.getYearsInfoForYearInfo(yearInfo);
@@ -174,7 +169,7 @@ public class DahuoFragment extends BaseFragment {
                                 if (n > 0) {
                                     //添加数据
                                     adapter.addData(datas.size(), yearInfo);
-                                    recyclerviewTime.scrollToPosition(datas.size()-1);
+                                    recyclerviewTime.scrollToPosition(datas.size() - 1);
                                     //重新添加每项点击事件监听
                                     setOnItemClickListener();
                                     Toast.makeText(mContext, "数据添加成功！", Toast.LENGTH_SHORT).show();
@@ -184,8 +179,6 @@ public class DahuoFragment extends BaseFragment {
                             }
 
                         }
-
-
 
 
                     }
@@ -214,7 +207,7 @@ public class DahuoFragment extends BaseFragment {
         linearLayoutManager.setStackFromEnd(true);//列表再底部开始展示，反转后由上面开始展示
         recyclerviewTime.setLayoutManager(linearLayoutManager);
         //倒序后设置选显示倒序第一行
-        recyclerviewTime.scrollToPosition(datas.size()-1);
+        recyclerviewTime.scrollToPosition(datas.size() - 1);
 
         //添加默认分割线：高度为2px，颜色为灰色
         recyclerviewTime.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.VERTICAL));

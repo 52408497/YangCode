@@ -43,8 +43,9 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
         //初始化View
         initViews();
 
-        //初始化数据
-        initDatas();
+        //因为添加新款式后需要刷新本页，所以重写了onResume方法用来初始化数据
+//        //初始化数据
+//        initDatas();
 
     }
 
@@ -170,4 +171,12 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
 //
 //
 //    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //初始化数据
+        initDatas();
+    }
+
 }

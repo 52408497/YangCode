@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/sv_scrollView"
     tools:context="com.example.administrator.jianshang.activity.NewDaHuoClothesActivity">
 
 
@@ -198,6 +199,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_kscb"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginVertical="8dp"
@@ -244,6 +246,7 @@
 
 
         <RelativeLayout
+            android:id="@+id/rl_ksfl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"

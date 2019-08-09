@@ -3,7 +3,7 @@ package com.example.administrator.jianshang.bean;
 public class FuLiaoInfoBean {
     private String fuliao_name;
     private String fuliao_img_name;
-    private int jiage;
+    private float jiage;
     private String gongyingshang;
     private int gongyinshangId;
 
@@ -36,11 +36,11 @@ public class FuLiaoInfoBean {
         this.fuliao_img_name = fuliao_img_name;
     }
 
-    public int getJiage() {
+    public float getJiage() {
         return jiage;
     }
 
-    public void setJiage(int jiage) {
+    public void setJiage(float jiage) {
         this.jiage = jiage;
     }
 

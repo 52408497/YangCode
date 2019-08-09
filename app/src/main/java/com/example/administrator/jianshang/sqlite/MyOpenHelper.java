@@ -109,17 +109,18 @@ public class MyOpenHelper extends SQLiteOpenHelper {
                 "cangku_address text," +
                 "dangkou_telephone integer," +
                 "cangku_telephone integer," +
-                "mingpian_img text)");
+                "mingpian_img_zm text," +
+                "mingpian_img_fm text)");
 
-        //创建面料信息表
-        sqLiteDatabase.execSQL("create table tb_mianliao_info(" +
-                "_id_mianliao integer primary key autoincrement," +
-                "id_dahuo integer," +
-                "mianliao_name text," +
-                "mianliao_img text," +
-                "jiage text," +
-                "id_gongyingshang integer," +
-                "beizhu text)");
+//        //创建面料信息表
+//        sqLiteDatabase.execSQL("create table tb_mianliao_info(" +
+//                "_id_mianliao integer primary key autoincrement," +
+//                "id_dahuo integer," +
+//                "mianliao_name text," +
+//                "mianliao_img text," +
+//                "jiage text," +
+//                "id_gongyingshang integer," +
+//                "beizhu text)");
 
         //创建辅料信息表
         sqLiteDatabase.execSQL("create table tb_fuliao_info(" +

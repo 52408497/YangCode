@@ -2,4 +2,6 @@
     <string name="app_name">简尚</string>
     <string name="title_jbxx"><u><b><i>基本信息</i></b></u></string>
     <string name="my_photo_folder_name">JianShangPhoto</string>
+    <string name="gongyinshang_type_ml">面料</string>
+    <string name="gongyinshang_type_fl">辅料</string>
 </resources>

@@ -53,9 +53,9 @@ public class MainActivity extends FragmentActivity {
                 case R.id.rb_daHuo:
                     position = 0;
                     break;
-                case R.id.rb_yangYi:
-                    position = 1;
-                    break;
+//                case R.id.rb_yangYi:
+//                    position = 1;
+//                    break;
                 case R.id.rb_gongYingShang:
                     position = 2;
                     break;

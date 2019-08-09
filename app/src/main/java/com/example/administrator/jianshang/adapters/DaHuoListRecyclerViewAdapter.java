@@ -96,6 +96,7 @@ public class DaHuoListRecyclerViewAdapter extends RecyclerView.Adapter<DaHuoList
 //              .animate(R.anim.glide_anim)                 //动画
 //                .centerCrop()                               //图片显示样式
 //                .fitCenter()                                //图片显示样式
+                .dontAnimate()
                 .into(holder.iv_icon);
 
 
