@@ -4,12 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
+import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
 import com.example.administrator.jianshang.bean.DBGongyinshangInfoBean;
 import com.example.administrator.jianshang.bean.GongYinShangBean;
 import com.example.administrator.jianshang.sqlite.MyOpenHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -20,8 +23,10 @@ public class TbGongyinshangInfoDao {
 
     private MyOpenHelper myOpenHelper = null;
     private SQLiteDatabase db = null;
+    private Context context;
 
     public TbGongyinshangInfoDao(Context context) {
+        this.context = context;
         myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 3);
     }
 
@@ -48,18 +53,59 @@ public class TbGongyinshangInfoDao {
         return false;
     }
 
-    public boolean removeGongyinshangInfoForDahuoId(int id, SQLiteDatabase db) {
+    public boolean removeGongyinshangInfoForId(int id, SQLiteDatabase db) {
+        this.db = db;
+        return removeGongyinshangInfoForId(id);
+    }
 
-        int n = 0;
+    public boolean removeGongyinshangInfoForId(int id){
+        if (db == null) {
+            db = myOpenHelper.getWritableDatabase();
+        }
+        int n=0;
         n = db.delete("tb_gongyinshang_info",
                 "_id_gongyinshang = ?",
                 new String[]{String.valueOf(id)});
-        if (n > 0) {
+
+        db.close();
+
+        if (n>0){
             return true;
-        } else {
+        }else {
             return false;
         }
     }
+
+
+
+    public boolean removeGongyinshangInfoForBean(DBGongyinshangInfoBean bean){
+        boolean removeDataIsSuccess = false;
+        //删除数据库数据
+        removeDataIsSuccess = removeGongyinshangInfoForId(bean.getId());
+
+        if (removeDataIsSuccess) {
+            //删除本地图片
+            String folderName = context.getString(R.string.my_photo_folder_name);
+            File file_mingpian_zm = new File(Environment.getExternalStorageDirectory().getPath() +
+                    "/" + folderName + "/" + bean.getMingPianImgZM());
+            File file_mingpian_fm = new File(Environment.getExternalStorageDirectory().getPath() +
+                    "/" + folderName + "/" + bean.getMingPianImgFM());
+
+            if (file_mingpian_zm.exists()) {
+                file_mingpian_zm.delete();//删除正面名片图片
+            }
+
+            if (file_mingpian_fm.exists()) {
+                file_mingpian_fm.delete();//删除反面名片图片
+            }
+        }
+
+        return removeDataIsSuccess;
+    }
+
+
+
+
 
     public boolean isHaveGongyinshangInfoWithId(int id) {
         db = myOpenHelper.getWritableDatabase();
@@ -116,7 +162,6 @@ public class TbGongyinshangInfoDao {
         db.close();
         return dbGongyinshangInfoBeans;
     }
-
 
     public ArrayList<GongYinShangBean> getGongyinshangBeans() {
         ArrayList<GongYinShangBean> gongYinShangBeans = new ArrayList<>();

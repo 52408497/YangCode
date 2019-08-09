@@ -69,7 +69,6 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
         }
     }
 
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu,v,menuInfo);
@@ -128,7 +127,6 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
         });
     }
 
-
     public void creatNewClothes(View view) {
 
         Intent intent = new Intent();
@@ -137,8 +135,6 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
         startActivity(intent);
 
     }
-
-
 
     private void useDaHuoListRecyclerViewToShow() {
         adapter = new DaHuoListRecyclerViewAdapter(DaHuoListActivity.this, dbDaHuoInfoBeans,0);
@@ -153,8 +149,6 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
         recyclerviewDahuoList.addItemDecoration(new RecycleViewDivider(DaHuoListActivity.this, LinearLayoutManager.VERTICAL));
 
     }
-
-
 //    private void useRecyclerViewToShow() {
 //        //设置RecyclerView的适配器
 //        adapter = new TimeRecyclerViewAdapter(DaHuoListActivity.this, datas);

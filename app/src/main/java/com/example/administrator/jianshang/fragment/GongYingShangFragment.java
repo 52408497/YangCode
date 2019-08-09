@@ -170,7 +170,6 @@ public class GongYingShangFragment extends BaseFragment {
 
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
