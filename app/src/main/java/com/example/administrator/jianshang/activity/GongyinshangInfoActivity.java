@@ -49,9 +49,9 @@ public class GongyinshangInfoActivity extends AppCompatActivity {
         tvGongYinShangName.setText(gongyinshangInfoBean.getGongYinShangName());
         tvGongYinShangType.setText(gongyinshangInfoBean.getGongYinShangType());
         tvDangKouAddress.setText(gongyinshangInfoBean.getDangKouAddress());
-        tvDangKouTelephone.setText(gongyinshangInfoBean.getDangKouTelephone() + "");
+        tvDangKouTelephone.setText(gongyinshangInfoBean.getDangKouTelephone());
         tvCangKuAddress.setText(gongyinshangInfoBean.getCangKuAddress());
-        tvCangKuTelephone.setText(gongyinshangInfoBean.getCangKuTelephone() + "");
+        tvCangKuTelephone.setText(gongyinshangInfoBean.getCangKuTelephone());
 
         showImg(ivMingPianImgZm, gongyinshangInfoBean.getMingPianImgZM());
         showImg(ivMingPianImgFm, gongyinshangInfoBean.getMingPianImgFM());

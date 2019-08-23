@@ -271,6 +271,17 @@ public class DaHuoClothesInfoActivity extends AppCompatActivity {
                 });
 
                 ll_kstp_kstp.addView(imageView);
+
+
+                //这里可添加长按删除照片功能
+//                imageView.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//
+//                        return false;
+//                    }
+//                });
+
             }
         } else {
             ImageView imageView = new ImageView(DaHuoClothesInfoActivity.this);
@@ -299,5 +310,21 @@ public class DaHuoClothesInfoActivity extends AppCompatActivity {
         File fileUri = new File(Environment.getExternalStorageDirectory().getPath() +
                 "/" + folderName + "/" + chengbenImg);
         return Uri.fromFile(fileUri);
+    }
+
+    public void updateJbxx(View view) {
+
+    }
+
+    public void updateKscbImg(View view) {
+
+    }
+
+    public void addKstpImg(View view) {
+
+    }
+
+    public void addFlxx(View view) {
+
     }
 }

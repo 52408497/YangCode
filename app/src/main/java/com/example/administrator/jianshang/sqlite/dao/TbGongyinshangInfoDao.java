@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 
 import com.example.administrator.jianshang.R;
+import com.example.administrator.jianshang.Tools.Constants;
 import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
 import com.example.administrator.jianshang.bean.DBGongyinshangInfoBean;
 import com.example.administrator.jianshang.bean.GongYinShangBean;
@@ -24,10 +25,12 @@ public class TbGongyinshangInfoDao {
     private MyOpenHelper myOpenHelper = null;
     private SQLiteDatabase db = null;
     private Context context;
+    private int dbVersion;
 
     public TbGongyinshangInfoDao(Context context) {
         this.context = context;
-        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 3);
+        dbVersion = Constants.DBVERSION;
+        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, dbVersion);
     }
 
     public boolean addGongyinshangInfo(int dahuoId, DBGongyinshangInfoBean dbGongyinshangInfoBean, SQLiteDatabase db) {
@@ -148,8 +151,8 @@ public class TbGongyinshangInfoDao {
                 dbGongyinshangInfoBean.setGongYinShangType(gongyinshang_type);
                 dbGongyinshangInfoBean.setDangKouAddress(cursor.getString(cursor.getColumnIndex("dangkou_address")));
                 dbGongyinshangInfoBean.setCangKuAddress(cursor.getString(cursor.getColumnIndex("cangku_address")));
-                dbGongyinshangInfoBean.setCangKuTelephone(cursor.getLong(cursor.getColumnIndex("cangku_telephone")));
-                dbGongyinshangInfoBean.setDangKouTelephone(cursor.getLong(cursor.getColumnIndex("dangkou_telephone")));
+                dbGongyinshangInfoBean.setCangKuTelephone(cursor.getString(cursor.getColumnIndex("cangku_telephone")));
+                dbGongyinshangInfoBean.setDangKouTelephone(cursor.getString(cursor.getColumnIndex("dangkou_telephone")));
                 dbGongyinshangInfoBean.setGongYinShangName(cursor.getString(cursor.getColumnIndex("gongyinshang_name")));
                 dbGongyinshangInfoBean.setMingPianImgZM(cursor.getString(cursor.getColumnIndex("mingpian_img_zm")));
                 dbGongyinshangInfoBean.setMingPianImgFM(cursor.getString(cursor.getColumnIndex("mingpian_img_fm")));
@@ -162,6 +165,34 @@ public class TbGongyinshangInfoDao {
         db.close();
         return dbGongyinshangInfoBeans;
     }
+
+    public ArrayList<GongYinShangBean> getGongyinshangBeansWithType(String gongyinshang_type){
+        ArrayList<GongYinShangBean> gongYinShangBeans = new ArrayList<>();
+        db = myOpenHelper.getWritableDatabase();
+        Cursor cursor = db.query("tb_gongyinshang_info",
+                null,
+                "gongyinshang_type = ?",
+                new String[]{String.valueOf(gongyinshang_type)},
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                GongYinShangBean bean = new GongYinShangBean();
+
+                bean.setId(cursor.getInt(cursor.getColumnIndex("_id_gongyinshang")));
+                bean.setName(cursor.getString(cursor.getColumnIndex("gongyinshang_name")));
+
+                gongYinShangBeans.add(bean);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return gongYinShangBeans;
+    }
+
 
     public ArrayList<GongYinShangBean> getGongyinshangBeans() {
         ArrayList<GongYinShangBean> gongYinShangBeans = new ArrayList<>();

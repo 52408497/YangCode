@@ -28,6 +28,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -111,6 +113,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private ImageView ivTuPian;         //辅料图片
     private Button btnOk;               //确定按钮
     private Button btnQx;               //取消按钮
+    private RadioGroup radioGroup;      //面辅料类型单选按钮组
+
 //    //----------------------------------
 
     private FuLiaoInfoBean fuLiaoInfoBean;
@@ -130,6 +134,8 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
     private FileBean fileBean;
     private FileBean beDelFileBean = null;
 
+    private String sType = "";
+
     private String oldPath = "";
     private String newPath = "";
     private String folderName = "";
@@ -141,6 +147,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     private String fileNameForCB = "";               //成本图片名
     private String fileNameForFL = "";               //辅料图片名
+
 
 
     private ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans;//辅料信息列表集合
@@ -1026,10 +1033,68 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         btnOk = (Button) view.findViewById(R.id.btn_ok);               //确定按钮
                         btnQx = (Button) view.findViewById(R.id.btn_qx);               //取消按钮
                         btnOk.setText("确定");
+                        radioGroup = view.findViewById(R.id.rg_type);
 
+                        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                RadioButton radioButton = (RadioButton)view.findViewById(checkedId);
+                                sType = radioButton.getText().toString();
+
+                                TbGongyinshangInfoDao gongyinshangInfoDao = new TbGongyinshangInfoDao(NewDaHuoClothesActivity.this);
+                                // List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
+                                List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeansWithType(sType);
+
+                                if (gongyinshangInfoBeans.size()<=0){
+                                    GongYinShangBean bean = new GongYinShangBean();
+                                    bean.setName("暂无供应商");
+                                    bean.setId(-1);
+                                    gongyinshangInfoBeans.add(bean);
+                                }
+//                        下拉列表中的值，这里暂时固定写死，以后将改为从数据库中动态获取
+//
+//                        List<GongYinShangBean> gongyinshangInfoBeans = new ArrayList<GongYinShangBean>();
+
+//                        String[] gys = {
+//                                "贵宜典", "姚明织带", "画龙点睛", "三鼎织带"
+//                        };
+//
+//
+//
+//                        for (int i = 0; i < 4; i++) {
+//                            GongYinShangBean gongYinShangBean = new GongYinShangBean();
+//                            gongYinShangBean.setId(i + 1);
+//                            gongYinShangBean.setName(gys[i]);
+//                            gongyinshangInfoBeans.add(gongYinShangBean);
+//                        }
+
+                                //--------------------------------------------------
+
+
+//                        ArrayAdapter<GongYinShangBean> adapter = new ArrayAdapter<GongYinShangBean>( view.getContext(),
+//                                android.R.layout.simple_spinner_item, gongyinshangInfoBeans);
+
+                                ArrayAdapter<GongYinShangBean> adapter = new ArrayAdapter<GongYinShangBean>(
+                                        view.getContext(),
+                                        android.R.layout.simple_dropdown_item_1line,
+                                        android.R.id.text1,
+                                        gongyinshangInfoBeans
+                                );
+
+                                spGongyinshang.setAdapter(adapter);
+                            }
+                        });
+
+                        for (int i=0;i<radioGroup.getChildCount();i++){
+                            RadioButton rd = (RadioButton) radioGroup.getChildAt(i);
+                            if (rd.isChecked()){
+                                sType = rd.getText().toString();
+                            }
+                        }
 
                         TbGongyinshangInfoDao gongyinshangInfoDao = new TbGongyinshangInfoDao(NewDaHuoClothesActivity.this);
-                        List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
+                       // List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
+                        List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeansWithType(sType);
 
                         if (gongyinshangInfoBeans.size()<=0){
                             GongYinShangBean bean = new GongYinShangBean();

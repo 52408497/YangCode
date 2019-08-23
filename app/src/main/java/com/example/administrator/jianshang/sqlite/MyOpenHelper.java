@@ -43,10 +43,38 @@ public class MyOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         Log.i("test:","数据库版本已更新，数据已清空！");
         //删除原有的表
-        dropTables(sqLiteDatabase);
+       // dropTables(sqLiteDatabase);
         //重新创建表
-        creatTables(sqLiteDatabase);
+       // creatTables(sqLiteDatabase);
+
+        //更新表结构
+        updateGYS(sqLiteDatabase);
     }
+
+    private void updateGYS(SQLiteDatabase sqLiteDatabase){
+
+        sqLiteDatabase.execSQL("ALTER TABLE tb_gongyinshang_info RENAME TO _tb_gongyinshang_info_old_20190821");
+
+        sqLiteDatabase.execSQL("create table tb_gongyinshang_info(" +
+                "_id_gongyinshang integer primary key autoincrement," +
+                "gongyinshang_type text," +
+                "gongyinshang_name text," +
+                "dangkou_address text," +
+                "cangku_address text," +
+                "dangkou_telephone text," +
+                "cangku_telephone text," +
+                "mingpian_img_zm text," +
+                "mingpian_img_fm text)");
+
+        sqLiteDatabase.execSQL("INSERT INTO tb_gongyinshang_info("+
+                "gongyinshang_type,gongyinshang_name,dangkou_address,cangku_address," +
+                "dangkou_telephone,cangku_telephone,mingpian_img_zm,mingpian_img_fm) select gongyinshang_type,gongyinshang_name,dangkou_address,cangku_address," +
+                "dangkou_telephone,cangku_telephone,mingpian_img_zm,mingpian_img_fm FROM _tb_gongyinshang_info_old_20190821;");
+
+        sqLiteDatabase.execSQL("DROP TABLE _tb_gongyinshang_info_old_20190821;");
+
+
+    };
 
     private void dropTables(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("drop table if exists tb_year_info");
@@ -107,8 +135,8 @@ public class MyOpenHelper extends SQLiteOpenHelper {
                 "gongyinshang_name text," +
                 "dangkou_address text," +
                 "cangku_address text," +
-                "dangkou_telephone integer," +
-                "cangku_telephone integer," +
+                "dangkou_telephone text," +
+                "cangku_telephone text," +
                 "mingpian_img_zm text," +
                 "mingpian_img_fm text)");
 

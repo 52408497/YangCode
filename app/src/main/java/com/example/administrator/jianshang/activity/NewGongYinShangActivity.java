@@ -112,8 +112,8 @@ public class NewGongYinShangActivity extends AppCompatActivity implements EasyPe
             bean.setGongYinShangName(name);
             bean.setGongYinShangType(rbType.getText().toString().trim());
             bean.setDangKouAddress(etDkAddress.getText().toString().trim());
-            bean.setDangKouTelephone((dkTel.equals("")||dkTel==null)?0:Long.parseLong(dkTel));
-            bean.setCangKuTelephone((ckTel.equals("")||ckTel==null)?0:Long.parseLong(ckTel));
+            bean.setDangKouTelephone((dkTel.equals("")||dkTel==null)?0+"":dkTel);
+            bean.setCangKuTelephone((ckTel.equals("")||ckTel==null)?0+"":ckTel);
             bean.setCangKuAddress(etCkAddress.getText().toString().trim());
             bean.setMingPianImgZM(imgZM);
             bean.setMingPianImgFM(imgFM);

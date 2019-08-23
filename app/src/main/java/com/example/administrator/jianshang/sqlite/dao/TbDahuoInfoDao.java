@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.administrator.jianshang.Tools.Constants;
 import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
 import com.example.administrator.jianshang.sqlite.MyOpenHelper;
 
@@ -19,9 +20,11 @@ public class TbDahuoInfoDao {
 
     private MyOpenHelper myOpenHelper = null;
     private SQLiteDatabase db = null;
+private int dbVersion;
 
     public TbDahuoInfoDao(Context context) {
-        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 3);
+        dbVersion = Constants.DBVERSION;
+        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, dbVersion);
     }
 
 

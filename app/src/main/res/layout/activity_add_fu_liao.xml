@@ -60,11 +60,11 @@
         android:inputType="numberDecimal"/>
 
     <Spinner
+        android:id="@+id/sp_gongyinshang"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_toRightOf="@+id/tv_name"
         android:layout_below="@+id/et_jiage"
-        android:id="@+id/sp_gongyinshang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:spinnerMode="dialog">
@@ -72,6 +72,27 @@
     </Spinner>
 
 
+    <RadioGroup
+        android:id="@+id/rg_type"
+        android:layout_alignRight="@+id/et_name"
+        android:layout_alignTop="@+id/tv_gongyinshang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/rb_mianliao"
+            android:text="面料"
+            android:textSize="15dp"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rb_fuliao"
+            android:text="辅料"
+            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
 
 
     <ImageButton

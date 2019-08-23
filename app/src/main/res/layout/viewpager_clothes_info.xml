@@ -20,19 +20,34 @@
             android:padding="5dp"
             android:layout_marginBottom="5dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_jbxx_title"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@color/qianhuise"
-                android:gravity="center|left"
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/tv_title_jbxx"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="基本信息" />
-            </LinearLayout>
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="8dp"
+                    android:text="基本信息"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/btnUpdate"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/tv_title_jbxx"
+                    android:background="@drawable/update"
+                    android:onClick="updateJbxx" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/ll_jbxx_jbxx"
@@ -112,19 +127,34 @@
             android:padding="5dp"
             android:background="@color/white"
             android:gravity="top|left">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_kscb_title"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@color/qianhuise"
-                android:gravity="center|left"
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/tv_title_kscb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="款式成本" />
-            </LinearLayout>
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="8dp"
+                    android:text="款式成本"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/btnUpdateKscbImg"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/tv_title_kscb"
+                    android:background="@drawable/paizhao"
+                    android:onClick="updateKscbImg" />
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/ll_kscb_kscb"
@@ -148,19 +178,34 @@
             android:layout_marginBottom="5dp"
             android:background="@color/white"
             android:gravity="top|center">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/ll_kstp_title"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@color/qianhuise"
-                android:gravity="center|left"
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/tv_title_kstp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="款式图片" />
-            </LinearLayout>
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="8dp"
+                    android:text="款式图片"
+                    android:textSize="20dp" />
+
+                <ImageButton
+                    android:id="@+id/btnAddKstpImg"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/tv_title_kstp"
+                    android:background="@drawable/add"
+                    android:onClick="addKstpImg" />
+
+            </RelativeLayout>
             <LinearLayout
                 android:id="@+id/ll_kstp_kstp"
                 android:layout_width="match_parent"

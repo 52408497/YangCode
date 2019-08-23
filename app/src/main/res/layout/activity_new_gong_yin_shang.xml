@@ -148,7 +148,7 @@
                 android:singleLine="true" />
 
             <EditText
-                android:inputType="number"
+                android:inputType="phone"
                 android:id="@+id/et_dk_tel"
                 android:hint="请输入档口电话"
                 android:layout_width="match_parent"
@@ -172,7 +172,7 @@
                 android:nextFocusForward="@+id/et_ck_tel"
                 android:singleLine="true" />
             <EditText
-                android:inputType="number"
+                android:inputType="phone"
                 android:id="@+id/et_ck_tel"
                 android:hint="请输入仓库电话"
                 android:layout_width="match_parent"

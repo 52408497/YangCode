@@ -8,8 +8,8 @@ public class DBGongyinshangInfoBean  implements Serializable {
     private String gongYinShangName;    //供应商名字
     private String dangKouAddress;      //档口地址
     private String cangKuAddress;       //仓库地址
-    private long dangKouTelephone;       //档口电话
-    private long cangKuTelephone;        //仓库电话
+    private String dangKouTelephone;       //档口电话
+    private String cangKuTelephone;        //仓库电话
     private String mingPianImgZM;         //名片正面图片文件名
     private String mingPianImgFM;       //名片反面图片文件名
 
@@ -54,19 +54,19 @@ public class DBGongyinshangInfoBean  implements Serializable {
         this.cangKuAddress = cangKuAddress;
     }
 
-    public long getDangKouTelephone() {
+    public String getDangKouTelephone() {
         return dangKouTelephone;
     }
 
-    public void setDangKouTelephone(long dangKouTelephone) {
+    public void setDangKouTelephone(String dangKouTelephone) {
         this.dangKouTelephone = dangKouTelephone;
     }
 
-    public long getCangKuTelephone() {
+    public String getCangKuTelephone() {
         return cangKuTelephone;
     }
 
-    public void setCangKuTelephone(long cangKuTelephone) {
+    public void setCangKuTelephone(String cangKuTelephone) {
         this.cangKuTelephone = cangKuTelephone;
     }
 

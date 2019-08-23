@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 
 import com.example.administrator.jianshang.R;
+import com.example.administrator.jianshang.Tools.Constants;
 import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
 import com.example.administrator.jianshang.bean.DBDahuoImgBean;
 import com.example.administrator.jianshang.bean.DBFuliaoInfoBean;
@@ -20,10 +21,12 @@ public class ClothesInfoDao {
     private MyOpenHelper myOpenHelper = null;
     private SQLiteDatabase db = null;
     private Context context;
+    private int dbVersion;
 
     public ClothesInfoDao(Context context) {
         this.context = context;
-        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, 3);
+        dbVersion = Constants.DBVERSION;
+        myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, dbVersion);
     }
 
     /**

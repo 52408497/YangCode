@@ -8,19 +8,33 @@
     android:background="@color/white"
     android:padding="5dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_flxx_title"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/qianhuise"
-        android:gravity="center|left"
         android:padding="5dp">
 
         <TextView
+            android:id="@+id/tv_title_flxx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="辅料信息" />
-    </LinearLayout>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="辅料信息"
+            android:textSize="20dp" />
+
+        <ImageButton
+            android:id="@+id/btnAddFlxx"
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_title_flxx"
+            android:background="@drawable/add"
+            android:onClick="addFlxx" />
+
+    </RelativeLayout>
 
 
 

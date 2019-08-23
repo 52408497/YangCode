@@ -8,5 +8,6 @@ package com.example.administrator.jianshang.Tools;
  */
 public class Constants {
     public static final String ID = "ID";
+    public static final int DBVERSION = 4;
 
 }

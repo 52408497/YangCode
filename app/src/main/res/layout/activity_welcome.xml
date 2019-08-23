@@ -11,7 +11,7 @@
         android:id="@+id/png_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/my_logo"
+        android:src="@drawable/my_logo_2"
         android:layout_centerInParent="true"
         />
 
