@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/search" />
+            android:background="@drawable/image_btn_search_selector" />
 
         <ImageButton
             android:id="@+id/btnAdd"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/add" />
+            android:background="@drawable/image_btn_add_selector" />
 
     </LinearLayout>
 

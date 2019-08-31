@@ -21,7 +21,10 @@ public class ImageDetailActivity extends AppCompatActivity {
         PhotoView pv = findViewById(R.id.pv);
 
         //获取传递过来的参数
-        String url = getIntent().getStringExtra(Constants.ID);
+        String url = getIntent().getStringExtra(Constants.URI);
+//        int dahuoID = getIntent().getIntExtra(Constants.ID,-1);
+//        String ksImgName = getIntent().getStringExtra(Constants.FILENAME);
+
 
 
 

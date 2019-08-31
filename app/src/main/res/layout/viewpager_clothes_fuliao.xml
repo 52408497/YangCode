@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/tv_title_flxx"
-            android:background="@drawable/add"
+            android:background="@drawable/image_btn_add_selector"
             android:onClick="addFlxx" />
 
     </RelativeLayout>

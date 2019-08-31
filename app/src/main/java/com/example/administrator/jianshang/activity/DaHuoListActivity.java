@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.administrator.jianshang.R;
+import com.example.administrator.jianshang.Tools.Constants;
 import com.example.administrator.jianshang.adapters.DaHuoListRecyclerViewAdapter;
 import com.example.administrator.jianshang.adapters.RecycleViewDivider;
 import com.example.administrator.jianshang.bean.DBDaHuoInfoBean;
@@ -173,4 +174,10 @@ private ArrayList<DBDaHuoInfoBean> dbDaHuoInfoBeans;
         initDatas();
     }
 
+    public void toSearchActivity(View view) {
+        Intent intent = new Intent();
+        intent.setClass(DaHuoListActivity.this, SearchActivity.class);
+        intent.putExtra(Constants.TO_SEARCH_ACTIVITY,Constants.SEARCH_CLOTHESINFO);
+        startActivity(intent);
+    }
 }

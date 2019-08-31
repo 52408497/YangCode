@@ -170,7 +170,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_toLeftOf="@+id/btnXiangCe"
                     android:layout_toStartOf="@+id/btnXiangCe"
-                    android:background="@drawable/paizhao"
+                    android:background="@drawable/image_btn_camer_selector"
                     android:onClick="paiZhaoOnClickForKSTP" />
 
                 <ImageButton
@@ -181,7 +181,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/xiangce"
+                    android:background="@drawable/image_btn_xiangce_selector"
                     android:onClick="xiangCeOnClickForKSTP" />
 
             </RelativeLayout>
@@ -232,7 +232,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/paizhao"
+                    android:background="@drawable/image_btn_camer_selector"
                     android:onClick="paizhaoOnClickForKSCB" />
             </RelativeLayout>
 
@@ -280,7 +280,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/add"
+                    android:background="@drawable/image_btn_add_selector"
                     android:onClick="addFuLiao" />
             </RelativeLayout>
 

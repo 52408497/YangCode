@@ -39,6 +39,7 @@ import com.bumptech.glide.Glide;
 import com.example.administrator.jianshang.R;
 import com.example.administrator.jianshang.Tools.ApplictionWidthAndHeight;
 import com.example.administrator.jianshang.Tools.CommonPopupWindow;
+import com.example.administrator.jianshang.Tools.Constants;
 import com.example.administrator.jianshang.Tools.FileUtils;
 import com.example.administrator.jianshang.Tools.ClothesTagType;
 import com.example.administrator.jianshang.Tools.PhotoUtils;
@@ -147,7 +148,6 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
 
     private String fileNameForCB = "";               //成本图片名
     private String fileNameForFL = "";               //辅料图片名
-
 
 
     private ArrayList<DBFuliaoInfoBean> dbFuliaoInfoBeans;//辅料信息列表集合
@@ -852,7 +852,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
             Toast.makeText(NewDaHuoClothesActivity.this, "请填写样板号！", Toast.LENGTH_SHORT).show();
         } else {
 
-//从数据库中查询该款号是否存在，若不存在则可添加
+            //从数据库中查询该款号是否存在，若不存在则可添加
             ClothesInfoDao dao = new ClothesInfoDao(NewDaHuoClothesActivity.this);
             boolean haveThisKH = dao.getInfoForYearAndKH(timeData, sKH);
             if (!haveThisKH) {
@@ -934,7 +934,7 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                             fileBeanListForKS) {
                         DBDahuoImgBean dbDahuoImgBean = new DBDahuoImgBean();
                         dbDahuoImgBean.setImgName(bean.getFileName());
-                        dbDahuoImgBean.setImgType("KS");
+                        dbDahuoImgBean.setImgType(Constants.DB_DAHUO_IMG_TYPE_KS);
                         dbDahuoImgBeans.add(dbDahuoImgBean);
 //            Log.e("---照片名,所有显示的照片：---", bean.getFileName());
 //            Log.e("---照片名,所有显示的照片：---", bean.getFileUri().toString());
@@ -1038,14 +1038,14 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                RadioButton radioButton = (RadioButton)view.findViewById(checkedId);
+                                RadioButton radioButton = (RadioButton) view.findViewById(checkedId);
                                 sType = radioButton.getText().toString();
 
                                 TbGongyinshangInfoDao gongyinshangInfoDao = new TbGongyinshangInfoDao(NewDaHuoClothesActivity.this);
                                 // List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
                                 List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeansWithType(sType);
 
-                                if (gongyinshangInfoBeans.size()<=0){
+                                if (gongyinshangInfoBeans.size() <= 0) {
                                     GongYinShangBean bean = new GongYinShangBean();
                                     bean.setName("暂无供应商");
                                     bean.setId(-1);
@@ -1085,18 +1085,18 @@ public class NewDaHuoClothesActivity extends AppCompatActivity implements EasyPe
                             }
                         });
 
-                        for (int i=0;i<radioGroup.getChildCount();i++){
+                        for (int i = 0; i < radioGroup.getChildCount(); i++) {
                             RadioButton rd = (RadioButton) radioGroup.getChildAt(i);
-                            if (rd.isChecked()){
+                            if (rd.isChecked()) {
                                 sType = rd.getText().toString();
                             }
                         }
 
                         TbGongyinshangInfoDao gongyinshangInfoDao = new TbGongyinshangInfoDao(NewDaHuoClothesActivity.this);
-                       // List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
+                        // List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeans();
                         List<GongYinShangBean> gongyinshangInfoBeans = gongyinshangInfoDao.getGongyinshangBeansWithType(sType);
 
-                        if (gongyinshangInfoBeans.size()<=0){
+                        if (gongyinshangInfoBeans.size() <= 0) {
                             GongYinShangBean bean = new GongYinShangBean();
                             bean.setName("暂无供应商");
                             bean.setId(-1);

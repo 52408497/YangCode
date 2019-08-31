@@ -7,22 +7,27 @@
     android:background="@android:color/white"
     tools:context="com.example.administrator.jianshang.activity.WelcomeActivity">
 
-    <ImageView
-        android:id="@+id/png_logo"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/my_logo_2"
         android:layout_centerInParent="true"
-        />
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
+        <ImageView
+            android:id="@+id/png_logo"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/logo" />
 
-    <TextView
-        android:textSize="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="让时尚的工作更简单！"
-        android:textColor="@android:color/black"
-        android:layout_below="@+id/png_logo"
-        />
+        <TextView
+            android:textSize="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="让时尚的工作更简单！"
+            android:textColor="@android:color/black"
+            android:layout_below="@+id/png_logo" />
+
+    </LinearLayout>
 
 </RelativeLayout>

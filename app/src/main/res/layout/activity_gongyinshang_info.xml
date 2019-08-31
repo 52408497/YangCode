@@ -30,7 +30,7 @@
            <ImageButton
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:background="@drawable/del"
+               android:background="@drawable/image_btn_del_selector"
                android:layout_marginRight="10dp"
                android:onClick="removeGongYingShangInfo"/>
         </LinearLayout>

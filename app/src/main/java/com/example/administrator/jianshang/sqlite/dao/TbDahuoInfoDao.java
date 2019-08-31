@@ -198,4 +198,27 @@ private int dbVersion;
 
         return 0;
     }
+
+
+    public int updateDahuoInfo(DBDaHuoInfoBean bean) {
+        db = myOpenHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("kuanhao",bean.getKuanhao());
+        values.put("kuanshimingcheng",bean.getKuanshimingcheng());
+        values.put("yangbanhao",bean.getYangbanhao());
+        values.put("year_info",bean.getYearInfo());
+        values.put("fengmian_img",bean.getFengmianImg());
+        values.put("chengben_img",bean.getChengbenImg());
+        values.put("tag",bean.getTag());
+        values.put("beizhu",bean.getBeizhu());
+
+        int n = db.update(
+                "tb_dahuo_info",
+                values,
+                "_id_dahuo = ?",
+                new String[]{String.valueOf(bean.getId())});
+
+        return n;
+    }
 }

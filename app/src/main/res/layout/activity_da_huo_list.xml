@@ -16,11 +16,12 @@
         android:padding="8dp">
 
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true" />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="款式列表"
+    android:layout_weight="1"
+    android:textSize="20dp"/>
 
         <ImageButton
             android:id="@+id/btnSearch"
@@ -28,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/search" />
+            android:background="@drawable/image_btn_search_selector"
+            android:onClick="toSearchActivity"/>
 
         <ImageButton
             android:id="@+id/btnNewClothes"
@@ -36,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/add"
+            android:background="@drawable/image_btn_add_selector"
             android:onClick="creatNewClothes" />
 
 

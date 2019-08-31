@@ -16,7 +16,7 @@
         >
 
         <ImageButton
-            android:background="@drawable/add"
+            android:background="@drawable/image_btn_add_selector"
             android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

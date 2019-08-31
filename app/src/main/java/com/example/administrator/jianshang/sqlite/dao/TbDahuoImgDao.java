@@ -27,8 +27,24 @@ public class TbDahuoImgDao {
         myOpenHelper = new MyOpenHelper(context, "jianshang.db", null, dbVersion);
     }
 
+    public boolean addDahuoImg(DBDahuoImgBean dbDahuoImgBean) {
+        db = myOpenHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("id_dahuo", dbDahuoImgBean.getDahuoId());
+        values.put("img_type", dbDahuoImgBean.getImgType());
+        values.put("img_name", dbDahuoImgBean.getImgName());
 
 
+        long n = db.insert("tb_dahuo_img",
+                null,
+                values);
+        if (n > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public boolean addDahuoImg(int dahuoId, DBDahuoImgBean dbDahuoImgBean, SQLiteDatabase db) {
 
@@ -157,5 +173,68 @@ public class TbDahuoImgDao {
         db.close();
         return dbDahuoImgBeans;
 
+    }
+
+    public boolean addDahuoImgs(ArrayList<DBDahuoImgBean> dbDahuoImgBeans) {
+        boolean isSuccess = false;
+
+        db = myOpenHelper.getWritableDatabase();
+
+        try {
+            db.beginTransaction(); // 开启事务
+
+            for (DBDahuoImgBean bean:dbDahuoImgBeans) {
+
+                ContentValues values = new ContentValues();
+                values.put("id_dahuo", bean.getDahuoId());
+                values.put("img_type", bean.getImgType());
+                values.put("img_name", bean.getImgName());
+
+
+                long n = db.insert("tb_dahuo_img",
+                        null,
+                        values);
+
+                if (n>0){
+                    isSuccess = true;
+                }else {
+                    isSuccess = false;
+                    break;
+                }
+
+            }
+
+            if (isSuccess){
+                db.setTransactionSuccessful(); // 事务默认是失败的，要设置成功，否则数据不会修改
+            }
+
+
+        }catch (Exception e) {
+            isSuccess = false;
+            e.printStackTrace();
+
+        } finally {
+            db.endTransaction(); // 结束事务
+            db.close();
+            myOpenHelper.close();
+        }
+
+
+        return isSuccess;
+    }
+
+    public boolean removeDahuoImgForId(int id) {
+        int n = 0;
+        db = myOpenHelper.getWritableDatabase();
+
+        n = db.delete("tb_dahuo_img",
+                "_id_dahuo_img = ?",
+                new String[]{String.valueOf(id)});
+
+        if (n > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

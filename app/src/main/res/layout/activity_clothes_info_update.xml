@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="com.example.administrator.jianshang.activity.ClothesInfoUpdateActivity">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+    <TextView
+        android:text="基本信息修改"
+        android:textSize="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/tv_kh"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="款号：" />
+
+    <EditText
+        android:id="@+id/et_kh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/tv_ksmc"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_kh_value"
+        android:text="款式名称：" />
+
+    <EditText
+        android:id="@+id/et_ksmc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/tv_ybh"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="样版编号：" />
+
+
+    <EditText
+        android:id="@+id/et_ybh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/tv_bz"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="备注：" />
+
+    <EditText
+        android:id="@+id/et_bz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:text="修改"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="updateOnClick"
+            />
+        <Button
+            android:id="@+id/btn_qx"
+            android:text="取消"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="qxOnClick"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
